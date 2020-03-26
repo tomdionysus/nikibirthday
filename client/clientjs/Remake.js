@@ -10,7 +10,11 @@ class Remake extends GameEngine {
 		this.addAsset('kobold.inner','/assets/KoboldVillageInner.png')
 		this.addAsset('kobold.outer','/assets/KoboldVillageOuter.png')
 
+		this.addAsset('flikWalk','/mobs/FlikWalk.png')
+
 		this.addAudio('adventure','/audio/115adventurousjourney.mp3','audio/mpeg')
+
+		this.addMob('flik', 'flikWalk')
 	}
 
 	mousedown() {
@@ -21,6 +25,10 @@ class Remake extends GameEngine {
 			this.getAudio('adventure').stop()
 			this.playing = false
 		}
+	}
+
+	run() {
+		this.getMob('flik').animate()
 	}
 }
 

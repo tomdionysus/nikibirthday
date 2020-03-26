@@ -4,12 +4,14 @@ const _ = require('underscore')
 const Browser = require('Browser')
 const Asset = require('Asset')
 const Audio = require('Audio')
+const Mob = require('Mob')
 
 class GameEngine {
 	constructor(options) {
 		options = options || {}
 		this.Asset = options.Asset || Asset
 		this.Audio = options.Audio || Audio
+		this.Mob = options.Mob || Mob
 		this.targetId = options.targetId
 		this.fullscreen = !!options.fullscreen
 		this.debug = !!options.debug
@@ -31,6 +33,7 @@ class GameEngine {
 		this.enableZoom = typeof(options.enableZoom)=='undefined' ? true : !!options.enableZoom
 
 		this.audioDefs = {}
+		this.mobDefs = {}
 		this.assetNames = {}
 	}
 
@@ -45,8 +48,8 @@ class GameEngine {
 			(cb) => { this.loadAssets(cb) },
 			// Load Audio
 			(cb) => { this.loadAudio(cb) },
-			// Init
-			(cb) => { this.init(cb) },
+			// Load Mobs
+			(cb) => { this.loadMobs(cb) },
 			// Boot Element
 			(cb) => { this.bootElement(cb) },
 		], 
@@ -57,6 +60,8 @@ class GameEngine {
 				return
 			}
 			this.running = true
+			if(this.run) this.run()
+
 			this.redraw()
 			this.tick()
 			console.debug('started')
@@ -96,10 +101,21 @@ class GameEngine {
 		return this.audio[name]
 	}
 
+	addMob(name, asset, options) {
+		this.mobDefs[name] = {name: name, asset: asset}
+	}
+
+
+	getMob(name) {
+		if (!this.mobs[name]) throw 'Mob not found: '+name
+		return this.mobs[name]
+	}
+
 	redraw() {
 		this.clear = true
 
-		// Redraw background
+		// Redraw All Mobs
+		for(var i in this.mobs) this.mobs[i].redraw()
 	}
 
 	tick() {
@@ -117,6 +133,12 @@ class GameEngine {
 		context.scale(this.scale, this.scale)
 		context.translate(this.x, this.y)
 
+		// Mobs
+		var flik = this.getMob('flik')
+		if(flik) {
+			flik.draw(context)
+		} 
+
 		// Draw Background
 		context.restore()
 
@@ -126,11 +148,6 @@ class GameEngine {
 		this.clear = false
 
 		if(this.running) Browser.window.requestAnimationFrame(this.tick.bind(this),0)
-	}
-
-	init(callback) {
-		console.debug('init')
-		if(callback) callback()
 	}
 
 	loadAssets(callback) {
@@ -151,6 +168,16 @@ class GameEngine {
 		}
 
 		async.each(this.audio, (audio, cb) => { audio.load(cb) }, callback)
+	}
+
+	loadMobs(callback) {
+		console.debug('loading mobs')
+		this.mobs = {}
+		for(var i in this.mobDefs) {
+			this.mobs[i] = new this.Mob({ name: i, asset: this.getAsset(this.mobDefs[i].asset) })
+		}
+
+		callback()
 	}
 
 	bootElement(callback) {
