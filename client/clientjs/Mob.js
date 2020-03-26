@@ -3,25 +3,14 @@ class Mob {
 		options = options || {}
 		this.asset = options.asset
 
-		this.tileWidth = options.tileWidth || 48
-		this.tileHeight = options.tileHeight || 96
-
 		this.frames = {}
 
-		this.tile = [1,3]
-		this.offsetX = 128
-		this.offsetY = 128
+		this.tile = [0,0]
+		this.offsetX = 0
+		this.offsetY = 0
 
-		this.animations = {
-			'walknorth': [ [0,1],[1,1],[2,1],[1,1] ],
-			'walksouth': [ [0,0],[1,0],[2,0],[1,0] ],
-			'walkwest':  [ [0,2],[1,2],[2,2],[1,2] ],
-			'walkeast':  [ [0,3],[1,3],[2,3],[1,3] ],
-		}
-
-		this.currentAnimation = { name: 'walkeast', frame: 0, loop: true }
-
-		this.toRedraw = true
+		this.animations = {}
+		this.currentAnimation = options.currentAnimation || null
 	}
 
 	redraw() {
@@ -49,20 +38,19 @@ class Mob {
 	animate() {
 		var nextFrame = ()=>{
 			var anim = this.animations[this.currentAnimation.name]
-			if(anim[this.currentAnimation.frame]) {
-				this.tile = anim[this.currentAnimation.frame]	
-				this.currentAnimation.frame++
-			} else {
+			this.tile = anim[this.currentAnimation.frame]	
+			this.currentAnimation.frame++
+			if(!anim[this.currentAnimation.frame]) {
 				if (this.currentAnimation.loop) {
 					this.currentAnimation.frame = 0
-					this.tile = anim[this.currentAnimation.frame]
 				} else {
 					this.currentAnimation = null
 				}
 			}
+			this.offsetX = this.offsetX+10
 			this.redraw()
 
-			if(this.currentAnimation) setTimeout(nextFrame, 100)
+			if(this.currentAnimation) setTimeout(nextFrame, this.currentAnimation.delay)
 		}
 
 		nextFrame()

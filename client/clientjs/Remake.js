@@ -1,4 +1,5 @@
 const GameEngine = require('GameEngine')
+const Character = require('Character')
 
 class Remake extends GameEngine {
 	constructor(options) {
@@ -11,10 +12,12 @@ class Remake extends GameEngine {
 		this.addAsset('kobold.outer','/assets/KoboldVillageOuter.png')
 
 		this.addAsset('flikWalk','/mobs/FlikWalk.png')
+		this.addAsset('victorWalk','/mobs/VictorWalk.png')
 
 		this.addAudio('adventure','/audio/115adventurousjourney.mp3','audio/mpeg')
 
-		this.addMob('flik', 'flikWalk')
+		this.addMob('flik', 'flikWalk', Character, { offsetX: 128, offsetY: 128, currentAnimation: { name: 'walkeast', frame: 0, loop: true, delay: 120 } })
+		this.addMob('victor', 'victorWalk', Character, { offsetX: 512, offsetY: 128, currentAnimation: { name: 'walkwest', frame: 0, loop: true, delay: 120 } })
 	}
 
 	mousedown() {
@@ -29,6 +32,7 @@ class Remake extends GameEngine {
 
 	run() {
 		this.getMob('flik').animate()
+		this.getMob('victor').animate()
 	}
 }
 

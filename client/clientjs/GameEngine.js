@@ -101,8 +101,8 @@ class GameEngine {
 		return this.audio[name]
 	}
 
-	addMob(name, asset, options) {
-		this.mobDefs[name] = {name: name, asset: asset}
+	addMob(name, asset, klass = Mob, options = {}) {
+		this.mobDefs[name] = {name: name, asset: asset, klass: klass, options: options }
 	}
 
 
@@ -121,6 +121,8 @@ class GameEngine {
 	tick() {
 		var context = this.element.getContext('2d')
 
+		this.redraw()
+
 		if(this.clear) {
 			context.fillStyle = 'black'
 			context.fillRect(0, 0, this.element.width, this.element.height)
@@ -134,10 +136,9 @@ class GameEngine {
 		context.translate(this.x, this.y)
 
 		// Mobs
-		var flik = this.getMob('flik')
-		if(flik) {
-			flik.draw(context)
-		} 
+		for(var i in this.mobs) {
+			this.mobs[i].draw(context)
+		}
 
 		// Draw Background
 		context.restore()
@@ -174,7 +175,8 @@ class GameEngine {
 		console.debug('loading mobs')
 		this.mobs = {}
 		for(var i in this.mobDefs) {
-			this.mobs[i] = new this.Mob({ name: i, asset: this.getAsset(this.mobDefs[i].asset) })
+			var opts = Object.assign({ name: i, asset: this.getAsset(this.mobDefs[i].asset) }, this.mobDefs[i].options || {})
+			this.mobs[i] = new this.mobDefs[i].klass(opts)
 		}
 
 		callback()
