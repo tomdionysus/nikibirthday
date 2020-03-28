@@ -12,6 +12,8 @@ const path = require('path')
 
 var logger = new Logger({logLevel: 'INFO'})
 
+logger.info("Building into directory 'build'...")
+
 async.series([
 	(cb) => { fs.rmdir('./build', { recursive: true }, cb) },
 	(cb) => { fs.mkdir('./build', {}, cb) },
