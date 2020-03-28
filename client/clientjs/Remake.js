@@ -12,46 +12,62 @@ class Remake extends GameEngine {
 		this.enableZoom = false
 		this.showHUD = false
 
+		// Make us look suitably 8-bit
 		this.scale = 1.5
 
+		// Start faded out
 		this.globalAlpha = 0
 
-		this.addAsset('kobold.inner','assets/KoboldVillageInner.png')
-		this.addAsset('kobold.outer','assets/KoboldVillageOuter.png')
+		// Bring in those cute Kobold's village
+		this.addAsset('kobold.inner','./assets/KoboldVillageInner.png')
+		this.addAsset('kobold.outer','./assets/KoboldVillageOuter.png')
 
-		this.addAsset('flikWalk','mobs/FlikWalk.png')
-		this.addAsset('victorWalk','mobs/VictorWalk.png')
+		// And the boys, Flik and Victor
+		this.addAsset('flikWalk','./mobs/FlikWalk.png')
+		this.addAsset('victorWalk','./mobs/VictorWalk.png')
 
-		this.addAudio('adventure','audio/130 even farther.mp3','audio/mpeg')
+		// Upbeat world map music
+		this.addAudio('adventure','./audio/130 even farther.mp3','audio/mpeg')
 
+		// Instantiate our characters
 		this.addMob('victor', 'victorWalk', Character, { offsetX: 128, offsetY: 128, tile: [1,3] })
 		this.addMob('flik', 'flikWalk', Character, { offsetX: 1024, offsetY: 128, tile: [1,2] })
 	}
 
 	init(cb) {
+
+		// Start Victor and Flik 3/4 of the way down the screen from opposite ends of however wide we are
 		this.getMob('flik').offsetX = this.width-128
 		this.getMob('flik').offsetY = (this.height/4*3)-48
 		this.getMob('victor').offsetY = (this.height/4*3)-48
+
+		// Store the middle of the screen in x
 		this.charStopX = (this.width/2)-24
 		cb()
 	}
 
 	mousedown() {
 		if(!this.playing) {
-			this.getAudio('adventure').play()
+			// Play the tunes, fade them in
+			this.getAudio('adventure').fadeIn(4500)
 			this.playing = true
 
+			// After 1.5 sec, cue Victor
 			setTimeout(()=>{
+				// Start the global fade in, 3 seconds
 				this.fadeIn(3000)
-				this.getMob('victor').animate({ name: 'walkeast', frame: 0, loop: true, delay: 120, dx: 10, maxX: this.charStopX-256, stopTile: [1,0] })
-			},1000)
+				// Get him to walk 'east' until the middle minus 192px
+				this.getMob('victor').animate({ name: 'walkeast', frame: 0, loop: true, delay: 120, dx: 10, maxX: this.charStopX-192, stopTile: [1,0] })
+			},1500)
+			// After 1.25 sec, cue Flik, cause he's slightly lazy
 			setTimeout(()=>{
-				this.getMob('flik').animate({ name: 'walkwest', frame: 0, loop: true, delay: 120, dx: -10, minX: this.charStopX+256, stopTile: [1,0] })
-			},750)
+				// Get him to walk 'west' until the middle minus 192px
+				this.getMob('flik').animate({ name: 'walkwest', frame: 0, loop: true, delay: 120, dx: -10, minX: this.charStopX+192, stopTile: [1,0] })
+			},1250)
 		} else {
-			this.getAudio('adventure').stop()
+			this.getAudio('adventure').fadeOut(3000)
 			this.playing = false
-			this.fadeOut(2000)
+			this.fadeOut(3000)
 		}
 	}
 

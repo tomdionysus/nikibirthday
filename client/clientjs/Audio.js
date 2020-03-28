@@ -46,6 +46,36 @@ class Audio {
 		this.element.currentTime = '0'
 	}
 
+	fadeOut(duration = 1000) { 
+		this._fade(0, duration, this.pause.bind(this))
+	}
+
+	fadeIn(duration = 1000) { 
+		this.element.volume = 0
+		this.play()
+		this._fade(1, duration) 
+	}
+
+	_fade(toValue, duration, callback) {
+		if(this._fadeTimeout) clearTimeout(this._fadeTimeout)
+			
+		var dv = (toValue - this.element.volume) / (duration/10)
+		var x = () => {
+			var p = this.element.volume + dv
+			if((dv<0 && p <= toValue) || (dv>0 && p >= toValue)) {
+				this.element.volume = toValue
+				if(callback) {
+					delete this._fadeTimeout
+					return callback()
+				}
+			} else {
+				this.element.volume = p
+				this._fadeTimeout = setTimeout(x, 10)
+			}
+		}
+		x()
+	}
+
 	_oncanplaythrough() {
 		if(this._callonloaded) {
 			var x = this._callonloaded
