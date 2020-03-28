@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/usr/bin/env node
 
 const Server = require("./lib/Server")
 const Logger = require("./lib/Logger")
@@ -22,8 +22,8 @@ function main() {
 	logger.log("Logging Level %s","----",Logger.logLevelToString(logger.logLevel))
 
 	// Dependencies
-	var sassEngine = new SassEngine({ logger: logger, recompile: process.env.ENV=="dev" })
-	var clientJSEngine = new ClientJSEngine({ logger: logger, beautify: process.env.ENV=="dev", recompile: process.env.ENV=="dev" })
+	var sassEngine = new SassEngine({ logger: logger, recompile: true })
+	var clientJSEngine = new ClientJSEngine({ logger: logger, beautify: true, recompile: true })
 
 	// Main Server
 	var svr = new Server({
