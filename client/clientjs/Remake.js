@@ -14,10 +14,10 @@ class Remake extends GameEngine {
 		this.addAsset('flikWalk','mobs/FlikWalk.png')
 		this.addAsset('victorWalk','mobs/VictorWalk.png')
 
-		this.addAudio('adventure','audio/115adventurousjourney.mp3','audio/mpeg')
+		this.addAudio('adventure','audio/130 even farther.mp3','audio/mpeg')
 
 		this.addMob('flik', 'flikWalk', Character, { offsetX: 128, offsetY: 128, currentAnimation: { name: 'walkeast', frame: 0, loop: true, delay: 120 } })
-		this.addMob('victor', 'victorWalk', Character, { offsetX: 512, offsetY: 128, currentAnimation: { name: 'walkwest', frame: 0, loop: true, delay: 120 } })
+		this.addMob('victor', 'victorWalk', Character, { offsetX: 156, offsetY: 128, currentAnimation: { name: 'walkeast', frame: 0, loop: true, delay: 120 } })
 	}
 
 	mousedown() {
