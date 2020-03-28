@@ -213,8 +213,8 @@ class GameEngine {
 		this.element.classList.add('gamescreen')
 		this.target.parentNode.replaceChild(this.element, this.target)
 
-		this.w = this.element.width / this.scale
-		this.h = this.element.height / this.scale
+		this.width = this.element.width / this.scale
+		this.height = this.element.height / this.scale
 
 		this.bindMouseWheel()
 
@@ -224,8 +224,8 @@ class GameEngine {
 	recomputeFullScreen() {
 		this.element.width = this.window.innerWidth
 		this.element.height = this.window.innerHeight
-		this.w = this.element.width / this.scale
-		this.h = this.element.height / this.scale
+		this.width = this.element.width / this.scale
+		this.height = this.element.height / this.scale
 		this.redraw()
 	}
 
@@ -269,13 +269,13 @@ class GameEngine {
 			if(this.maxScale) this.scale = Math.min(this.scale, this.maxScale)
 
 			// Update Width/Height
-			var ow = this.w, oh = this.h
-			this.w = this.element.width / this.scale
-			this.h = this.element.height / this.scale
+			var ow = this.width, oh = this.height
+			this.width = this.element.width / this.scale
+			this.height = this.element.height / this.scale
 
 			// Update x and y to centre zoom
-			this.x = this.x-(ow-this.w)/2
-			this.y = this.y-(oh-this.h)/2
+			this.x = this.x-(ow-this.width)/2
+			this.y = this.y-(oh-this.height)/2
 
 		} else {
 			this.x += e.deltaX
@@ -321,8 +321,8 @@ class GameEngine {
 		context.fillText(
 			'Screen (X: '+Math.round(this.x)
 			+' Y: '+Math.round(this.y)
-			+' W: '+Math.round(this.w)
-			+' H: '+Math.round(this.h)+')'
+			+' W: '+Math.round(this.width)
+			+' H: '+Math.round(this.height)+')'
 			+' Zoom: '+Math.round(this.scale*100)+'%'
 			+' Mouse (X: '+Math.round(this.mouseX)+' Y: '+Math.round(this.mouseY)+')'
 			+' Limits Min: (X: '+Math.round(this.minX/this.scale)+', Y: '+Math.round(this.minY/this.scale)+')'
