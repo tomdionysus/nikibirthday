@@ -56,6 +56,8 @@ class GameEngine {
 			(cb) => { this.loadMobs(cb) },
 			// Boot Element
 			(cb) => { this.bootElement(cb) },
+			// Init
+			(cb) => { this.init(cb) },
 		], 
 		(err) => {
 			if(err) {
@@ -89,6 +91,11 @@ class GameEngine {
 		ael('mousemove', (e) => this._move(e), false)
 		ael('mousedown', (e) => this.mousedown(e), false)
 		ael('mouseup', (e) => this.mouseup(e), false)
+	}
+
+	init(cb) {
+		console.debug('init')
+		cb()
 	}
 
 	stop() {

@@ -22,8 +22,16 @@ class Remake extends GameEngine {
 
 		this.addAudio('adventure','audio/130 even farther.mp3','audio/mpeg')
 
-		this.addMob('flik', 'flikWalk', Character, { offsetX: 128, offsetY: 128, tile: [1,3] })
-		this.addMob('victor', 'victorWalk', Character, { offsetX: 1024, offsetY: 128, tile: [1,2] })
+		this.addMob('victor', 'victorWalk', Character, { offsetX: 128, offsetY: 128, tile: [1,3] })
+		this.addMob('flik', 'flikWalk', Character, { offsetX: 1024, offsetY: 128, tile: [1,2] })
+	}
+
+	init(cb) {
+		this.getMob('flik').offsetX = this.width-128
+		this.getMob('flik').offsetY = (this.height/4*3)-48
+		this.getMob('victor').offsetY = (this.height/4*3)-48
+		this.charStopX = (this.width/2)-24
+		cb()
 	}
 
 	mousedown() {
@@ -33,9 +41,11 @@ class Remake extends GameEngine {
 
 			setTimeout(()=>{
 				this.fadeIn(3000)
-				this.getMob('flik').animate({ name: 'walkeast', frame: 0, loop: true, delay: 120, dx: 10, maxX: 512, stopTile: [1,0] })
-				this.getMob('victor').animate({ name: 'walkwest', frame: 0, loop: true, delay: 120, dx: -10, minX: 600, stopTile: [1,0] })
+				this.getMob('victor').animate({ name: 'walkeast', frame: 0, loop: true, delay: 120, dx: 10, maxX: this.charStopX-256, stopTile: [1,0] })
 			},1000)
+			setTimeout(()=>{
+				this.getMob('flik').animate({ name: 'walkwest', frame: 0, loop: true, delay: 120, dx: -10, minX: this.charStopX+256, stopTile: [1,0] })
+			},750)
 		} else {
 			this.getAudio('adventure').stop()
 			this.playing = false
