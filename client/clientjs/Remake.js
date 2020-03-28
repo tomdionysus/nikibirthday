@@ -12,6 +12,8 @@ class Remake extends GameEngine {
 		this.enableZoom = false
 		this.showHUD = false
 
+		this.globalAlpha = 0
+
 		this.addAsset('kobold.inner','assets/KoboldVillageInner.png')
 		this.addAsset('kobold.outer','assets/KoboldVillageOuter.png')
 
@@ -28,13 +30,16 @@ class Remake extends GameEngine {
 		if(!this.playing) {
 			this.getAudio('adventure').play()
 			this.playing = true
+
 			setTimeout(()=>{
+				this.fadeIn(3000)
 				this.getMob('flik').animate({ name: 'walkeast', frame: 0, loop: true, delay: 120, dx: 10, maxX: 512, stopTile: [1,0] })
 				this.getMob('victor').animate({ name: 'walkwest', frame: 0, loop: true, delay: 120, dx: -10, minX: 600, stopTile: [1,0] })
 			},1000)
 		} else {
 			this.getAudio('adventure').stop()
 			this.playing = false
+			this.fadeOut(2000)
 		}
 	}
 

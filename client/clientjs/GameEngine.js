@@ -16,6 +16,7 @@ class GameEngine {
 		this.fullscreen = !!options.fullscreen
 		this.debug = !!options.debug
 
+
 		this.showHUD = !!options.showHUD
 
 		this.scale = typeof(options.scale)=='undefined' ? 1 : options.scale
@@ -28,6 +29,7 @@ class GameEngine {
 		this.maxX = options.maxX
 		this.maxY = options.maxY
 
+		this.globalAlpha =  typeof(options.globalAlpha)=='undefined' ? 1 : options.globalAlpha
 		this.minScale = typeof(options.minScale)=='undefined' ? 0.01 : options.minScale
 		this.maxScale = typeof(options.maxScale)=='undefined' ? 10 : options.maxScale
 
@@ -69,6 +71,10 @@ class GameEngine {
 			console.debug('started')
 			if(callback) callback()
 		})
+	}
+
+	setGlobalAlpha(ga) {
+		this.globalAlpha = ga
 	}
 
 	bindMouseWheel() {
@@ -136,6 +142,8 @@ class GameEngine {
 
 		// Main
 		context.save()
+
+		context.globalAlpha = this.globalAlpha;
 
 		// Set scale
 		context.scale(this.scale, this.scale)
@@ -219,6 +227,36 @@ class GameEngine {
 		this.w = this.element.width / this.scale
 		this.h = this.element.height / this.scale
 		this.redraw()
+	}
+
+	fadeIn(duration) {
+		this.globalAlpha = 0
+		this.redraw()
+		var i = 1/(duration/100)
+		this._fadeInterval = setInterval(()=>{
+			this.globalAlpha += i
+			if(this.globalAlpha>1) { 
+				this.globalAlpha = 1
+				clearInterval(this._fadeInterval)
+				this._fadeInterval = null
+			}
+			this.redraw()
+		},100)
+	}
+
+	fadeOut(duration) {
+		this.globalAlpha = 1
+		this.redraw()
+		var i = 1/(duration/100)
+		this._fadeInterval = setInterval(()=>{
+			this.globalAlpha -= i
+			if(this.globalAlpha<0) { 
+				this.globalAlpha = 0
+				clearInterval(this._fadeInterval)
+				this._fadeInterval = null
+			}
+			this.redraw()
+		},100)
 	}
 
 	// Event Handlers
