@@ -37,6 +37,7 @@
 		"electron": "^8.2.0",
 		"eslint": "^5.16.0",
 		"istanbul": "0.4.5",
-		"jasmine": "2.8.0"
+		"jasmine": "2.8.0",
+		"uglifyify": "^5.0.2"
 	}
 }
