@@ -35,10 +35,30 @@ class Mob {
 		this.toRedraw = false
 	}
 
-	animate() {
+	animate(animation) {
+		if(animation) {
+			if(this.currentAnimation) this.stopAnimate()
+			this.currentAnimation = animation
+		}
+
 		var nextFrame = ()=>{
+			if(!this.currentAnimation) return
+
 			var anim = this.animations[this.currentAnimation.name]
-			this.tile = anim[this.currentAnimation.frame]	
+			this.tile = anim[this.currentAnimation.frame]
+
+			// End Conditions
+			if (
+				(this.currentAnimation.maxX && this.offsetX>=this.currentAnimation.maxX) ||
+				(this.currentAnimation.maxY && this.offsetY>=this.currentAnimation.maxY) ||
+				(this.currentAnimation.minX && this.offsetX<=this.currentAnimation.minX) ||
+				(this.currentAnimation.minY && this.offsetY<=this.currentAnimation.minY)
+			) {
+				
+				this.stopAnimate()
+				return
+			}
+
 			this.currentAnimation.frame++
 			if(!anim[this.currentAnimation.frame]) {
 				if (this.currentAnimation.loop) {
@@ -47,13 +67,22 @@ class Mob {
 					this.currentAnimation = null
 				}
 			}
-			this.offsetX = this.offsetX+10
+			if(this.currentAnimation.dx) this.offsetX = this.offsetX+this.currentAnimation.dx
+			if(this.currentAnimation.dy) this.offsetY = this.offsetY+this.currentAnimation.dy
 			this.redraw()
 
-			if(this.currentAnimation) setTimeout(nextFrame, this.currentAnimation.delay)
+			if(this.currentAnimation) this._currentAnimationTimeout = setTimeout(nextFrame, this.currentAnimation.delay)
 		}
 
 		nextFrame()
+	}
+
+	stopAnimate() {
+		if (this._currentAnimationTimeout) clearTimeout(this._currentAnimationTimeout)
+		if(this.currentAnimation.stopTile) this.tile = this.currentAnimation.stopTile
+		this.currentAnimation = null
+		this._currentAnimationTimeout = null
+		this.redraw()
 	}
 }
 
