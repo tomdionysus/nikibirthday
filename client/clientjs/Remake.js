@@ -12,6 +12,8 @@ class Remake extends GameEngine {
 		this.enableZoom = false
 		this.showHUD = false
 
+		this.scale = 1.5
+
 		this.globalAlpha = 0
 
 		this.addAsset('kobold.inner','assets/KoboldVillageInner.png')
