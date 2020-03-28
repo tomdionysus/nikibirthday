@@ -16,6 +16,8 @@ class GameEngine {
 		this.fullscreen = !!options.fullscreen
 		this.debug = !!options.debug
 
+		this.showHUD = !!options.showHUD
+
 		this.scale = typeof(options.scale)=='undefined' ? 1 : options.scale
 		this.x = options.x || 0
 		this.y = options.y || 0
@@ -72,8 +74,12 @@ class GameEngine {
 	bindMouseWheel() {
 		var ael = this.element.addEventListener
 		if(!ael) ael = this.element.attachEvent
-		ael('mousewheel', (e) => this._panZoom(e), false)
-		ael('DOMMouseScroll', (e) => this._panZoom(e), false)
+
+		if(this.enableScroll || this.enableZoom) {
+			ael('mousewheel', (e) => this._panZoom(e), false)
+			ael('DOMMouseScroll', (e) => this._panZoom(e), false)
+		}
+
 		ael('mousemove', (e) => this._move(e), false)
 		ael('mousedown', (e) => this.mousedown(e), false)
 		ael('mouseup', (e) => this.mouseup(e), false)
@@ -144,7 +150,7 @@ class GameEngine {
 		context.restore()
 
 		// HUD
-		if(this.clear) { this.drawHUD(context) }
+		if(this.showHUD && this.clear) { this.drawHUD(context) }
 		
 		this.clear = false
 
@@ -202,7 +208,7 @@ class GameEngine {
 		this.w = this.element.width / this.scale
 		this.h = this.element.height / this.scale
 
-		if(this.enableScroll || this.enableZoom) this.bindMouseWheel()
+		this.bindMouseWheel()
 
 		if(callback) callback()
 	}
