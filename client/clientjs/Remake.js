@@ -8,13 +8,13 @@ class Remake extends GameEngine {
 		this.debug = true
 		this.fullscreen = true
 
-		this.addAsset('kobold.inner','/assets/KoboldVillageInner.png')
-		this.addAsset('kobold.outer','/assets/KoboldVillageOuter.png')
+		this.addAsset('kobold.inner','assets/KoboldVillageInner.png')
+		this.addAsset('kobold.outer','assets/KoboldVillageOuter.png')
 
-		this.addAsset('flikWalk','/mobs/FlikWalk.png')
-		this.addAsset('victorWalk','/mobs/VictorWalk.png')
+		this.addAsset('flikWalk','mobs/FlikWalk.png')
+		this.addAsset('victorWalk','mobs/VictorWalk.png')
 
-		this.addAudio('adventure','/audio/115adventurousjourney.mp3','audio/mpeg')
+		this.addAudio('adventure','audio/115adventurousjourney.mp3','audio/mpeg')
 
 		this.addMob('flik', 'flikWalk', Character, { offsetX: 128, offsetY: 128, currentAnimation: { name: 'walkeast', frame: 0, loop: true, delay: 120 } })
 		this.addMob('victor', 'victorWalk', Character, { offsetX: 512, offsetY: 128, currentAnimation: { name: 'walkwest', frame: 0, loop: true, delay: 120 } })
@@ -24,6 +24,8 @@ class Remake extends GameEngine {
 		if(!this.playing) {
 			this.getAudio('adventure').play()
 			this.playing = true
+			this.getMob('flik').animate()
+			this.getMob('victor').animate()
 		} else {
 			this.getAudio('adventure').stop()
 			this.playing = false
@@ -31,8 +33,7 @@ class Remake extends GameEngine {
 	}
 
 	run() {
-		this.getMob('flik').animate()
-		this.getMob('victor').animate()
+
 	}
 }
 

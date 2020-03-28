@@ -11,6 +11,7 @@
 	"repository": "git@github.com:tomdionysus/remake.git",
 	"dependencies": {
 		"accept-language-parser": "^1.5.0",
+		"asar": "^3.0.2",
 		"async": "^2.6.3",
 		"body-parser": "^1.19.0",
 		"browserify": "^16.5.0",
@@ -19,10 +20,12 @@
 		"compression": "^1.7.4",
 		"cookie": "^0.3.1",
 		"cookie-parser": "^1.4.5",
+		"electron-packager": "^14.2.1",
 		"express": "^4.17.1",
 		"handlebars": "^4.7.3",
 		"memcached": "2.2.x",
 		"moment": "^2.24.0",
+		"ncp": "^2.0.0",
 		"node-sass": "^4.13.1",
 		"striptags": "^3.1.1",
 		"tmp": "0.0.33",
@@ -31,6 +34,7 @@
 		"uuid": "^3.4.0"
 	},
 	"devDependencies": {
+		"electron": "^8.2.0",
 		"eslint": "^5.16.0",
 		"istanbul": "0.4.5",
 		"jasmine": "2.8.0"

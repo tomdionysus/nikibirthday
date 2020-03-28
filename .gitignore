@@ -3,3 +3,5 @@ coverage
 upload
 start.sh
 public/css
+build
+dist

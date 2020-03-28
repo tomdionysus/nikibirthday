@@ -23,7 +23,7 @@ function main() {
 
 	// Dependencies
 	var sassEngine = new SassEngine({ logger: logger, recompile: process.env.ENV=="dev" })
-	var clientJSEngine = new ClientJSEngine({ logger: logger, beautify: process.env.ENV=="dev" })
+	var clientJSEngine = new ClientJSEngine({ logger: logger, beautify: process.env.ENV=="dev", recompile: process.env.ENV=="dev" })
 
 	// Main Server
 	var svr = new Server({
