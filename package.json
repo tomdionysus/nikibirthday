@@ -22,7 +22,6 @@
 		"cookie-parser": "^1.4.5",
 		"electron-packager": "^14.2.1",
 		"express": "^4.17.1",
-		"handlebars": "^4.7.3",
 		"memcached": "2.2.x",
 		"moment": "^2.24.0",
 		"ncp": "^2.0.0",

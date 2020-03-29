@@ -24,8 +24,6 @@ async.series([
 	// Build the app
 	(cb) => {
 		async.parallel([
-			// Copy Index main
-			(cb) => { fs.copyFile('./client/views/index.hbs', './build/index.html', cb) },
 			// Copy All electron support files
 			(cb) => { ncp('./electron/', './build', cb) },
 			// Copy All assets etc
