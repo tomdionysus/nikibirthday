@@ -13,7 +13,7 @@ class Remake extends GameEngine {
 		this.showHUD = false
 
 		// Make us look suitably 8-bit
-		this.scale = 1.5
+		this.scale = 1
 
 		// Start faded out
 		this.globalAlpha = 0

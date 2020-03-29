@@ -19,10 +19,15 @@ async.series([
 	(cb) => { fs.mkdir('./build', {}, cb) },
 	(cb) => { fs.mkdir('./build/css', {}, cb) },
 	(cb) => { fs.mkdir('./build/js', {}, cb) },
-	(cb) => { fs.copyFile('./client/views/index.hbs', './build/index.html', cb) },
-	(cb) => { ncp('./client/public/', './build', cb) },
-	(cb) => { compileSASS('./build/css/app.css', cb) },
-	(cb) => { compileJS('./build/js/app.js', cb) },
+	(cb) => {
+		async.parallel([
+			(cb) => { fs.copyFile('./client/views/index.hbs', './build/index.html', cb) },
+			(cb) => { ncp('./electron/', './build', cb) },
+			(cb) => { ncp('./client/public/', './build', cb) },
+			(cb) => { compileSASS('./build/css/app.css', cb) },
+			(cb) => { compileJS('./build/js/app.js', cb) },
+		], cb)
+	}
 ], (err) => {
 	if(err) {
 		logger.error(err)
