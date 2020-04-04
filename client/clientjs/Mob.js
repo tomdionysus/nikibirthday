@@ -5,12 +5,15 @@ class Mob {
 
 		this.frames = {}
 
-		this.tile = [0,0]
-		this.offsetX = 0
-		this.offsetY = 0
-		this.parent =  typeof(options.parent)=='undefined' ? null : options.parent
+		this.tileWidth = options.tileWidth || 48
+		this.tileHeight = options.tileHeight || 96
 
-		this.visible = true
+		this.tile = typeof(options.tile)=='undefined' ? null : options.tile
+		this.offsetX = options.offsetX || 0
+		this.offsetY = options.offsetY || 0
+		this.parent = typeof(options.parent)=='undefined' ? null : options.parent
+
+		this.visible = typeof(options.visible)=='undefined' ? true : !!options.visible
 
 		this.animations = {}
 		this.currentAnimation = options.currentAnimation || null
@@ -18,10 +21,13 @@ class Mob {
 		this.scale = typeof(options.scale)=='undefined' ? 1 : options.scale
 
 		this.mobs = {}
+		this.toRedraw = true
 	}
 
 	redraw() {
 		this.toRedraw = true
+		// Child Mobs
+		for(var i in this.mobs) this.mobs[i].redraw()
 	}
 
 	draw(context) {
@@ -32,25 +38,26 @@ class Mob {
 		context.translate(this.offsetX, this.offsetY)
 		context.scale(this.scale, this.scale)
 
-		// Main Mob
-		context.drawImage(
-			this.asset.element, 
-			this.tile[0]*this.tileWidth, 
-			this.tile[1]*this.tileHeight, 
-			this.tileWidth, 
-			this.tileHeight,
-			0, 
-			0,
-			this.tileWidth, 
-			this.tileHeight,
-		)
+		if(this.tile != null && this.tile[0] != null && this.tile[1] != null) {
+			// Main Mob
+			context.drawImage(
+				this.asset.element, 
+				this.tile[0]*this.tileWidth, 
+				this.tile[1]*this.tileHeight, 
+				this.tileWidth, 
+				this.tileHeight,
+				0, 
+				0,
+				this.tileWidth, 
+				this.tileHeight,
+			)
+		}
 
 		// Child Mobs
 		for(var i in this.mobs) {
 			this.mobs[i].draw(context)
 		}
 
-		// Draw Background
 		context.restore()
 
 		this.toRedraw = false
@@ -103,7 +110,7 @@ class Mob {
 				if (this.currentAnimation.loop) {
 					this.currentAnimation.frame = 0
 				} else {
-					this.currentAnimation = null
+					this.stopAnimate(Mob.STOPSTATUS_COMPLETED)
 				}
 			} else if (anim[this.currentAnimation.frame]===null) {
 				this.visible = false
