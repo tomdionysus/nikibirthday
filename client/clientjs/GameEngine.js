@@ -37,8 +37,9 @@ class GameEngine {
 		this.enableZoom = typeof(options.enableZoom)=='undefined' ? true : !!options.enableZoom
 
 		this.audioDefs = {}
-		this.mobDefs = {}
 		this.assetNames = {}
+
+		this.mobs = {}
 	}
 
 	start(callback) {
@@ -52,8 +53,6 @@ class GameEngine {
 			(cb) => { this.loadAssets(cb) },
 			// Load Audio
 			(cb) => { this.loadAudio(cb) },
-			// Load Mobs
-			(cb) => { this.loadMobs(cb) },
 			// Boot Element
 			(cb) => { this.bootElement(cb) },
 			// Init
@@ -120,8 +119,8 @@ class GameEngine {
 		return this.audio[name]
 	}
 
-	addMob(name, asset, klass = Mob, options = {}) {
-		this.mobDefs[name] = {name: name, asset: asset, klass: klass, options: options }
+	addMob(name, mob) {
+		this.mobs[name] = mob
 	}
 
 
@@ -150,9 +149,8 @@ class GameEngine {
 		// Main
 		context.save()
 
+		// Set Alpha, scale
 		context.globalAlpha = this.globalAlpha;
-
-		// Set scale
 		context.scale(this.scale, this.scale)
 		context.translate(this.x, this.y)
 
@@ -190,17 +188,6 @@ class GameEngine {
 		}
 
 		async.each(this.audio, (audio, cb) => { audio.load(cb) }, callback)
-	}
-
-	loadMobs(callback) {
-		console.debug('loading mobs')
-		this.mobs = {}
-		for(var i in this.mobDefs) {
-			var opts = Object.assign({ name: i, asset: this.getAsset(this.mobDefs[i].asset) }, this.mobDefs[i].options || {})
-			this.mobs[i] = new this.mobDefs[i].klass(opts)
-		}
-
-		callback()
 	}
 
 	bootElement(callback) {
