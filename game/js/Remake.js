@@ -35,7 +35,7 @@ class Remake extends GameEngine {
 		this.addMob('flik', new Character({ asset: this.getAsset('flikWalk'), offsetX: 1024, offsetY: 128, tile: [1,2] }))
 
 		// Start Victor and Flik 3/4 of the way down the screen from opposite ends of however wide we are
-		this.getMob('flik').offsetX = this.width-128
+		this.getMob('flik').offsetX = this.width-176
 		this.getMob('flik').offsetY = (this.height/4*3)-48
 		this.getMob('victor').offsetY = (this.height/4*3)-48
 

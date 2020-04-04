@@ -59,7 +59,7 @@ class GameEngine {
 		async.series([
 			// Load Assets
 			(cb) => { this.loadAssets(cb) },
-			// Load this.audio
+			// Load Audio
 			(cb) => { this.loadAudio(cb) },
 			// Boot Element
 			(cb) => { this.bootElement(cb) },
@@ -123,7 +123,7 @@ class GameEngine {
 	}
 
 	getAudio(name) {
-		if (!this.audio[name]) throw 'this.audio not found: '+name
+		if (!this.audio[name]) throw 'Audio not found: '+name
 		return this.audio[name]
 	}
 
@@ -188,7 +188,7 @@ class GameEngine {
 	}
 
 	loadAudio(callback) {
-		console.debug('loading this.audio')
+		console.debug('loading audio')
 		this.audio = {}
 		for(var i in this._audioDefs) {
 			this.audio[i] = new Audio({ name: i, src: this._audioDefs[i].src, type: this._audioDefs[i].type })
