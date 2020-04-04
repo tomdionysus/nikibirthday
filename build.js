@@ -2,8 +2,8 @@
 
 const Server = require("./lib/Server")
 const Logger = require("./lib/Logger")
-const SassEngine = require("./lib/SassEngine")
-const ClientJSEngine = require("./lib/ClientJSEngine")
+const SassCompiler = require("./lib/SassCompiler")
+const JSCompiler = require("./lib/JSCompiler")
 
 const fs = require('fs')
 const ncp = require('ncp')
@@ -27,7 +27,7 @@ async.series([
 			// Copy All electron support files
 			(cb) => { ncp('./electron/', './build', cb) },
 			// Copy All assets etc
-			(cb) => { ncp('./client/public/', './build', cb) },
+			(cb) => { ncp('./game/public/', './build', cb) },
 			// Compile SASS
 			(cb) => { compileSASS('./build/css/app.css', cb) },
 			// Compile JS
@@ -43,8 +43,8 @@ async.series([
 })
 
 function compileSASS(filename, cb) {
-	var sassEngine = new SassEngine({ logger: logger, recompile: false })
-	sassEngine.register('./client/sass/app.scss', (err,src) => {
+	var sassCompiler = new SassCompiler({ logger: logger, recompile: false })
+	sassCompiler.register('./game/sass/app.scss', (err,src) => {
 		if(err) return cb(err)
 		fs.writeFile(filename, src.css, cb)
 	})
@@ -52,8 +52,8 @@ function compileSASS(filename, cb) {
 }
 
 function compileJS(filename, cb) {
-	var clientJSEngine = new ClientJSEngine({ logger: logger, beautify: false })
-	clientJSEngine.register(path.join(__dirname, './client', 'clientjs'), (err, src) => {
+	var jsCompiler = new JSCompiler({ logger: logger, beautify: false })
+	jsCompiler.register(path.join(__dirname, './game', 'js'), (err, src) => {
 		if(err) return cb(err)
 		fs.writeFile(filename, src, cb)
 	})

@@ -51,10 +51,11 @@ class Remake extends GameEngine {
 			this.getAudio('adventure').fadeIn(4500)
 			this.playing = true
 
+			// Start the global fade in, 3 seconds
+			this.fadeIn(3000)
+
 			// After 1.5 sec, cue Victor
 			setTimeout(()=>{
-				// Start the global fade in, 3 seconds
-				this.fadeIn(3000)
 				// Get him to walk 'east' until the middle minus 192px
 				this.getMob('victor').animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: this.charStopX-192, stopTile: [1,0], onStop: (mob) => {
 					setTimeout(()=>{
@@ -69,7 +70,7 @@ class Remake extends GameEngine {
 
 			// After 2 sec, cue Flik, cause he's slightly lazy
 			setTimeout(()=>{
-				// Get him to walk 'west' until the middle minus 192px
+				// Get him to walk 'west' until the middle plus 192px
 				this.getMob('flik').animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX+192, stopTile: [1,0], onStop: (mob)=>{
 					// Stand there and blink occasionally
 					mob.getMob('overlay').animateStart({ name: 'blinksouth', loop: true })
