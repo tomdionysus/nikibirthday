@@ -224,7 +224,7 @@ class GameEngine {
 	}
 
 	fadeIn(duration) {
-		this.globalAlpha = 0
+		if(this.globalAlpha == 1) return
 		this.redraw()
 		var i = 1/(duration/100)
 		this._fadeInterval = setInterval(()=>{
@@ -239,7 +239,7 @@ class GameEngine {
 	}
 
 	fadeOut(duration) {
-		this.globalAlpha = 1
+		if(this.globalAlpha == 0) return
 		this.redraw()
 		var i = 1/(duration/100)
 		this._fadeInterval = setInterval(()=>{

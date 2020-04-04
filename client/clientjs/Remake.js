@@ -14,10 +14,10 @@ class Remake extends GameEngine {
 		this.showHUD = false
 
 		// Make us look suitably 8-bit
-		this.scale = 2
+		this.scale = 1
 
 		// Start faded out
-		this.globalAlpha = 1
+		this.globalAlpha = 0.1
 
 		// Bring in those cute Kobold's village
 		this.addAsset('kobold.inner','./assets/KoboldVillageInner.png')
@@ -55,12 +55,12 @@ class Remake extends GameEngine {
 			// After 1.5 sec, cue Victor
 			setTimeout(()=>{
 				// Start the global fade in, 3 seconds
-				// this.fadeIn(3000)
+				this.fadeIn(3000)
 				// Get him to walk 'east' until the middle minus 192px
-				this.getMob('victor').animate({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: this.charStopX-192, stopTile: [1,0], stopCallback: (mob) => {
+				this.getMob('victor').animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: this.charStopX-192, stopTile: [1,0], stopCallback: (mob) => {
 					setTimeout(()=>{
-						mob.animate({ name: 'jump', stopCallback: (mob)=>{
-							mob.getMob('overlay').animate({ name: 'blinksouth', loop: true })
+						mob.animateStart({ name: 'jump', stopCallback: (mob)=>{
+							mob.getMob('overlay').animateStart({ name: 'blinksouth', loop: true })
 						}})
 					},1000)
 				}})
@@ -68,8 +68,8 @@ class Remake extends GameEngine {
 			// After 1.25 sec, cue Flik, cause he's slightly lazy
 			setTimeout(()=>{
 				// Get him to walk 'west' until the middle minus 192px
-				this.getMob('flik').animate({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX+192, stopTile: [1,0], stopCallback: (mob)=>{
-					mob.getMob('overlay').animate({ name: 'blinksouth', loop: true })
+				this.getMob('flik').animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX+192, stopTile: [1,0], stopCallback: (mob)=>{
+					mob.getMob('overlay').animateStart({ name: 'blinksouth', loop: true })
 				}})
 			},1250)
 		} else {
