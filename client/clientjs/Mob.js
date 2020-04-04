@@ -3,18 +3,22 @@ class Mob {
 	constructor(options = {}) {
 		options = options || {}
 
-		// Asset is the graphical asset used for drawing
+		// Asset is the graphical asset used for drawing this mob.
+		// Usually, an asset will be divided up into 'tiles' of a specified width and height. A mob will display one
+		// of these tiles at any given time, and can be animated - so each tile is a frame.
 		this.asset = options.asset
 
 		// The width and height of the tiles in the asset
-		this.tileWidth = options.tileWidth || 48
-		this.tileHeight = options.tileHeight || 96
+		this.tileWidth = options.tileWidth
+		this.tileHeight = options.tileHeight
 
 		// The current tile coords as an array [x,y]
 		this.tile = typeof(options.tile)=='undefined' ? null : options.tile
+
 		// The current offsetX/Y from the origin of the container (the Scene, or the parent Mob)
 		this.offsetX = options.offsetX || 0
 		this.offsetY = options.offsetY || 0
+		
 		// The Parent container (the Scene, or the parent Mob)
 		this.parent = typeof(options.parent)=='undefined' ? null : options.parent
 
@@ -93,12 +97,31 @@ class Mob {
 		return this._mobs[name]
 	}
 
-	// Add an animation with the specified name and definition
+	// Add an animation with the specified name and definition (def)
+	// def is an array of the frame format [ tx, ty, dt, dx, dy ]:
+	// * tx - Tile X Coordinate in the asset in units of tileWidth 
+	// * ty - Tile Y Coordinate in the asset in units of tileHeight
+	// * dt - (optional) Delay after this frame
+	// * dx - (optional) offsetX Delta at this frame (move x pixels) 
+	// * dx - (optional) offsetY Delta at this frame (move y pixels) 
 	addAnimation(name, def) {
 		this._animations[name] = def
 	}
 
-	// Start an animation with the specified options
+	// Start an animation
+	// animation is an object with the following properties:
+	// * name     - The name of the animation to start, must have been previously defined by addAnimation
+	// * delay    - Default delay for each frame (unless overridden by the dt in the frame)
+	// * frame    - (optional) The starting frame, defaults to 0
+	// * loop     - (optional) Loop the animation (i) indefinitely if 'true' (ii) this number of times.
+	// * dx       - (optional) offsetX Delta at every frame (move x pixels), unless overridden by the dx in the frame
+	// * dy       - (optional) offsetY Delta at every frame (move y pixels), unless overridden by the dy in the frame
+	// * minX     - (optional) Stop the animation when the offsetX is equal or less than this value
+	// * minY     - (optional) Stop the animation when the offsetY is equal or less than this value
+	// * maxX     - (optional) Stop the animation when the offsetX is equal or greater than this value
+	// * maxY     - (optional) Stop the animation when the offsetY is equal or greater than this value
+	// * stopTile - (optional) Set this tile [x,y] when the animation stops
+	// * onStop   - (optional) A function to call when the animation stops, fn(mob) where mob is this mob.
 	animateStart(animation) {
 		if(animation) {
 			if(this._currentanimation) this.animateStop(Mob.STOPSTATUS_REPLACED)
@@ -147,6 +170,8 @@ class Mob {
 				if (this._currentanimation.loop) {
 					// Loop is specifed, restart from first frame
 					this._currentanimation.frame = 0
+					// Loop can be true, or a counter. If it's a counter, decrement it.
+					if(this._currentanimation.loop!==true) this._currentanimation.loop--
 				} else {
 					// Loop not specifed, end the animation
 					return this.animateStop(Mob.STOPSTATUS_COMPLETED)
@@ -168,13 +193,13 @@ class Mob {
 		nextFrame()
 	}
 
-	// Stop 
+	// Stop with an optional Stop Status
 	animateStop(stopStatus = Mob.STOPSTATUS_STOPPED) {
 		if(!this._currentanimation) return
 		if (this._currentanimation._timeout) clearTimeout(this._currentanimation._timeout)
 		if(this._currentanimation.stopTile) this.tile = this._currentanimation.stopTile
-		if(this._currentanimation.stopCallback) {
-			var func = this._currentanimation.stopCallback, self = this, f = () =>{ func(self, stopStatus) }
+		if(this._currentanimation.onStop) {
+			var func = this._currentanimation.onStop, self = this, f = () =>{ func(self, stopStatus) }
 			setImmediate(f)
 		}
 		this._currentanimation = null

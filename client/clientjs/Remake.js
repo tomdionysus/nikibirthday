@@ -6,20 +6,18 @@ class Remake extends GameEngine {
 	constructor(options) {
 		super(options)
 
-		this.debug = true
+		// Fullscreen, for electron
 		this.fullscreen = true
 
+		// No scrolling, zooming or debug HUD
 		this.enableScroll = false
 		this.enableZoom = false
 		this.showHUD = false
 
-		// Make us look suitably 8-bit
-		this.scale = 1
-
 		// Start faded out
 		this.globalAlpha = 0.1
 
-		// Bring in those cute Kobold's village
+		// Bring in that cute Kobold village
 		this.addAsset('kobold.inner','./assets/KoboldVillageInner.png')
 		this.addAsset('kobold.outer','./assets/KoboldVillageOuter.png')
 
@@ -31,7 +29,7 @@ class Remake extends GameEngine {
 		this.addAudio('adventure','./audio/130 even farther.mp3','audio/mpeg')
 	}
 
-	init(cb) {
+	init(callback) {
 		// Instantiate our characters
 		this.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), offsetX: 128, offsetY: 128, tile: [1,3] }))
 		this.addMob('flik', new Character({ asset: this.getAsset('flikWalk'), offsetX: 1024, offsetY: 128, tile: [1,2] }))
@@ -43,7 +41,8 @@ class Remake extends GameEngine {
 
 		// Store the middle of the screen in x
 		this.charStopX = (this.width/2)-24
-		cb()
+
+		callback()
 	}
 
 	mousedown() {
@@ -57,21 +56,25 @@ class Remake extends GameEngine {
 				// Start the global fade in, 3 seconds
 				this.fadeIn(3000)
 				// Get him to walk 'east' until the middle minus 192px
-				this.getMob('victor').animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: this.charStopX-192, stopTile: [1,0], stopCallback: (mob) => {
+				this.getMob('victor').animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: this.charStopX-192, stopTile: [1,0], onStop: (mob) => {
 					setTimeout(()=>{
-						mob.animateStart({ name: 'jump', stopCallback: (mob)=>{
+						// Jump three times (it's zero based) becase you're pleased to see us
+						mob.animateStart({ name: 'jump', loop: 2, onStop: (mob)=>{
+							// Stand there and blink occasionally
 							mob.getMob('overlay').animateStart({ name: 'blinksouth', loop: true })
 						}})
 					},1000)
 				}})
 			},1500)
-			// After 1.25 sec, cue Flik, cause he's slightly lazy
+
+			// After 2 sec, cue Flik, cause he's slightly lazy
 			setTimeout(()=>{
 				// Get him to walk 'west' until the middle minus 192px
-				this.getMob('flik').animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX+192, stopTile: [1,0], stopCallback: (mob)=>{
+				this.getMob('flik').animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX+192, stopTile: [1,0], onStop: (mob)=>{
+					// Stand there and blink occasionally
 					mob.getMob('overlay').animateStart({ name: 'blinksouth', loop: true })
 				}})
-			},1250)
+			},2000)
 		} else {
 			this.getAudio('adventure').fadeOut(3000)
 			this.playing = false

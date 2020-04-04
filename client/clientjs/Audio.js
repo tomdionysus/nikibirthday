@@ -1,5 +1,6 @@
 const Browser = require('Browser')
 
+// Audio is the base class for game audio, loaded into a HTML5 'audio' tag.
 class Audio {
 	constructor(options) {
 		options = options || {}

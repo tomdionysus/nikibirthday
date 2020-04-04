@@ -6,40 +6,48 @@ const Asset = require('Asset')
 const Audio = require('Audio')
 const Mob = require('Mob')
 
+// GameEngine is the base class for the top level container, mapping the game into a browser.
+// You should extend GameEngine to implement your own game.
 class GameEngine {
 	constructor(options) {
 		options = options || {}
-		this.Asset = options.Asset || Asset
-		this.Audio = options.Audio || Audio
-		this.Mob = options.Mob || Mob
+
+		// targetId is the DOM id of the element to target. This element will be replaced with a HTML5 'canvas' element.
 		this.targetId = options.targetId
+		// If fullscreen is true, the element will maximise as much as possible
 		this.fullscreen = !!options.fullscreen
-		this.debug = !!options.debug
 
-
+		// Show the Debug HUD
 		this.showHUD = !!options.showHUD
 
+		// The initial scale where 1 is 100%
 		this.scale = typeof(options.scale)=='undefined' ? 1 : options.scale
+
+		// The initial coordinates for scrolling
 		this.x = options.x || 0
 		this.y = options.y || 0
-		this.scale = options.scale || 1
 
+		// The min/max scale values when zoom is enabled
+		this.maxScale = typeof(options.maxScale)=='undefined' ? 10 : options.maxScale
+		this.minScale = typeof(options.minScale)=='undefined' ? 0.01 : options.minScale
+		
+		// The min/max scroll values when scroll is enabled
 		this.minX = options.minX
 		this.minY = options.minY
 		this.maxX = options.maxX
 		this.maxY = options.maxY
 
+		// Global Alpha
 		this.globalAlpha =  typeof(options.globalAlpha)=='undefined' ? 1 : options.globalAlpha
-		this.minScale = typeof(options.minScale)=='undefined' ? 0.01 : options.minScale
-		this.maxScale = typeof(options.maxScale)=='undefined' ? 10 : options.maxScale
 
+		// Enable mouse scrolling/zooming
 		this.enableScroll = typeof(options.enableScroll)=='undefined' ? true : !!options.enableScroll
 		this.enableZoom = typeof(options.enableZoom)=='undefined' ? true : !!options.enableZoom
 
-		this.audioDefs = {}
-		this.assetNames = {}
-
-		this.mobs = {}
+		// Private properties
+		this._audioDefs = {}
+		this._assetDefs = {}
+		this._mobs = {}
 	}
 
 	start(callback) {
@@ -51,7 +59,7 @@ class GameEngine {
 		async.series([
 			// Load Assets
 			(cb) => { this.loadAssets(cb) },
-			// Load Audio
+			// Load this.audio
 			(cb) => { this.loadAudio(cb) },
 			// Boot Element
 			(cb) => { this.bootElement(cb) },
@@ -67,8 +75,7 @@ class GameEngine {
 			this.running = true
 			if(this.run) this.run()
 
-			this.redraw()
-			this.tick()
+			setImmediate(()=>{ this.redraw(); this.tick() })
 			console.debug('started')
 			if(callback) callback()
 		})
@@ -92,6 +99,7 @@ class GameEngine {
 		ael('mouseup', (e) => this.mouseup(e), false)
 	}
 
+	// Init is called after asset and audio loading. You should override init to create your Scenes, Mobs and other game objects.
 	init(cb) {
 		console.debug('init')
 		cb()
@@ -102,7 +110,7 @@ class GameEngine {
 	}
 
 	addAsset(name, src) {
-		this.assetNames[name] = src
+		this._assetDefs[name] = src
 	}
 
 	getAsset(name) {
@@ -111,29 +119,28 @@ class GameEngine {
 	}
 
 	addAudio(name, src, type) {
-		this.audioDefs[name] = {src: src, type: type}
+		this._audioDefs[name] = {src: src, type: type}
 	}
 
 	getAudio(name) {
-		if (!this.audio[name]) throw 'Audio not found: '+name
+		if (!this.audio[name]) throw 'this.audio not found: '+name
 		return this.audio[name]
 	}
 
 	addMob(name, mob) {
-		this.mobs[name] = mob
+		this._mobs[name] = mob
 	}
 
-
 	getMob(name) {
-		if (!this.mobs[name]) throw 'Mob not found: '+name
-		return this.mobs[name]
+		if (!this._mobs[name]) throw 'Mob not found: '+name
+		return this._mobs[name]
 	}
 
 	redraw() {
 		this.clear = true
 
 		// Redraw All Mobs
-		for(var i in this.mobs) this.mobs[i].redraw()
+		for(var i in this._mobs) this._mobs[i].redraw()
 	}
 
 	tick() {
@@ -155,8 +162,8 @@ class GameEngine {
 		context.translate(this.x, this.y)
 
 		// Mobs
-		for(var i in this.mobs) {
-			this.mobs[i].draw(context)
+		for(var i in this._mobs) {
+			this._mobs[i].draw(context)
 		}
 
 		// Draw Background
@@ -173,18 +180,18 @@ class GameEngine {
 	loadAssets(callback) {
 		console.debug('loading assets')
 		this.assets = {}
-		for(var i in this.assetNames) {
-			this.assets[i] = new this.Asset({ name: i, src: this.assetNames[i] })
+		for(var i in this._assetDefs) {
+			this.assets[i] = new Asset({ name: i, src: this._assetDefs[i] })
 		}
 
 		async.each(this.assets, (asset, cb) => { asset.load(cb) }, callback)
 	}
 
 	loadAudio(callback) {
-		console.debug('loading audio')
+		console.debug('loading this.audio')
 		this.audio = {}
-		for(var i in this.audioDefs) {
-			this.audio[i] = new this.Audio({ name: i, src: this.audioDefs[i].src, type: this.audioDefs[i].type })
+		for(var i in this._audioDefs) {
+			this.audio[i] = new Audio({ name: i, src: this._audioDefs[i].src, type: this._audioDefs[i].type })
 		}
 
 		async.each(this.audio, (audio, cb) => { audio.load(cb) }, callback)
@@ -255,7 +262,7 @@ class GameEngine {
 
 	// Event Handlers
 	_panZoom(e) {
-		if(e.shiftKey) {
+		if(e.shiftKey && this.enableZoom) {
 			var f = e.deltaY/100
 			this.scale = this.scale + f
 
@@ -271,7 +278,7 @@ class GameEngine {
 			this.x = this.x-(ow-this.width)/2
 			this.y = this.y-(oh-this.height)/2
 
-		} else {
+		} else if(this.enableScroll) {
 			this.x += e.deltaX
 			this.y += e.deltaY
 		}
@@ -308,7 +315,6 @@ class GameEngine {
 	}
 
 	drawHUD(context) {
-		if(!this.debug) return
 		context.save()
 		context.font='14px Arial'
 		context.fillStyle = 'white'
