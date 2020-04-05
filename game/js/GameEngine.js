@@ -6,11 +6,20 @@ const Asset = require('Asset')
 const Audio = require('Audio')
 const Mob = require('Mob')
 
+const HasMobsMixin = require('HasMobsMixin')
+const HasScenesMixin = require('HasScenesMixin')
+
 // GameEngine is the base class for the top level container, mapping the game into a browser.
 // You should extend GameEngine to implement your own game.
 class GameEngine {
 	constructor(options) {
 		options = options || {}
+
+		// A GameEngine has a collection of Scenes
+		HasScenesMixin(this, options)
+
+		// A GameEngine has a collection of Mobs
+		HasMobsMixin(this, options)
 
 		// targetId is the DOM id of the element to target. This element will be replaced with a HTML5 'canvas' element.
 		this.targetId = options.targetId
@@ -47,7 +56,6 @@ class GameEngine {
 		// Private properties
 		this._audioDefs = {}
 		this._assetDefs = {}
-		this._mobs = {}
 	}
 
 	start(callback) {
@@ -127,20 +135,11 @@ class GameEngine {
 		return this.audio[name]
 	}
 
-	addMob(name, mob) {
-		this._mobs[name] = mob
-	}
-
-	getMob(name) {
-		if (!this._mobs[name]) throw 'Mob not found: '+name
-		return this._mobs[name]
-	}
-
 	redraw() {
 		this.clear = true
 
 		// Redraw All Mobs
-		for(var i in this._mobs) this._mobs[i].redraw()
+		this.redrawMobs()
 	}
 
 	tick() {
@@ -153,7 +152,6 @@ class GameEngine {
 			context.fillRect(0, 0, this.element.width, this.element.height)
 		}
 
-		// Main
 		context.save()
 
 		// Set Alpha, scale
@@ -161,12 +159,12 @@ class GameEngine {
 		context.scale(this.scale, this.scale)
 		context.translate(this.x, this.y)
 
-		// Mobs
-		for(var i in this._mobs) {
-			this._mobs[i].draw(context)
-		}
+		// Draw all the scenes in z-order
+		this.drawScenes(context)
 
-		// Draw Background
+		// Draw all the mobs in z-order
+		this.drawMobs(context)
+
 		context.restore()
 
 		// HUD

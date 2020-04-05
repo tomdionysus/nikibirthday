@@ -1,3 +1,5 @@
+const _ = require('underscore')
+
 // Mob is the base class for moving, animated subgraphics, also called 'Sprites' or 'Bobs' 
 class Mob {
 	constructor(options = {}) {
@@ -18,6 +20,9 @@ class Mob {
 		// The current offsetX/Y from the origin of the container (the Scene, or the parent Mob)
 		this.offsetX = options.offsetX || 0
 		this.offsetY = options.offsetY || 0
+
+		// The Z index, in the stack of the container (the Scene, or the parent Mob)
+		this.indexZ = options.indexZ || 0
 		
 		// The Parent container (the Scene, or the parent Mob)
 		this.parent = typeof(options.parent)=='undefined' ? null : options.parent
@@ -74,10 +79,7 @@ class Mob {
 			)
 		}
 
-		// Draw all Child Mobs
-		for(var i in this._mobs) {
-			this._mobs[i].draw(context)
-		}
+		this.drawMobs(context)
 
 		// Restore the context params for the next thing being drawn
 		context.restore()
@@ -89,12 +91,31 @@ class Mob {
 	// Add a child mob with the specified name
 	addMob(name, mob) {
 		this._mobs[name] = mob
+		mob.name = name
+		if(mob.parent && mob.parent.removeMob) mob.parent.removeMob(name)
+		mob.parent = this
+	}
+
+	// Remove a child mob with the specified name
+	removeMob(name) {
+		delete this._mobs[name]
+		this.redraw()
 	}
 
 	// Return the child mob with the specified name
 	getMob(name) {
 		if (!this._mobs[name]) throw 'Mob not found: '+name
 		return this._mobs[name]
+	}
+
+	// Draw mobs in z-order
+	drawMobs(context) {
+		if(!this._mobOrder) this.sortMobsZ()
+		for(var i in this._mobOrder) this._mobOrder[i].draw(context)
+	}
+
+	sortMobsZ() {
+		this._mobOrder = _.sortBy(Object.values(this._mobs), 'indexZ')
 	}
 
 	// Add an animation with the specified name and definition (def)
@@ -165,6 +186,10 @@ class Mob {
 			// Increment the frame
 			this._currentanimation.frame++
 
+			// If deltaX/Y is specified, move us
+			if(dx) this.offsetX += dx
+			if(dy) this.offsetY += dy
+
 			// End / Loop conditions
 			if(this._currentanimation.frame>=anim.length) {
 				if (this._currentanimation.loop) {
@@ -177,10 +202,6 @@ class Mob {
 					return this.animateStop(Mob.STOPSTATUS_COMPLETED)
 				}
 			}
-
-			// If deltaX/Y is specified, move us
-			if(dx) this.offsetX += dx
-			if(dy) this.offsetY += dy
 
 			// Mark to redraw
 			this.redraw()
