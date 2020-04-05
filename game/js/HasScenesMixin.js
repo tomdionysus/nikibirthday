@@ -13,6 +13,7 @@ class HasScenesMixin extends Mixin {
 		scene.name = name
 		if(scene.parent && scene.parent.removeScene) scene.parent.removeScene(name)
 		scene.parent = this
+		return scene
 	}
 
 	removeScene(name) {

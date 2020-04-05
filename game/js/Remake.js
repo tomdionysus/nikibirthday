@@ -1,5 +1,6 @@
 const GameEngine = require('GameEngine')
 const Character = require('Character')
+const Scene = require('Scene')
 const Mob = require('Mob')
 
 class Remake extends GameEngine {
@@ -33,17 +34,19 @@ class Remake extends GameEngine {
 	}
 
 	init(callback) {
+		this.main = this.addScene('main', new Scene({ asset: this.getAsset('kobold.outer') }))
+
 		// Instantiate our characters
-		this.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), offsetX: 128, offsetY: 128, tile: [1,3] }))
-		this.addMob('flik', new Character({ asset: this.getAsset('flikWalk'), offsetX: 1024, offsetY: 128, tile: [1,2] }))
+		this.victor = this.main.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), offsetX: 128, offsetY: 128, tile: [1,3] }))
+		this.flik = this.main.addMob('flik', new Character({ asset: this.getAsset('flikWalk'), offsetX: 1024, offsetY: 128, tile: [1,2] }))
 
 		// Start Victor and Flik 3/4 of the way down the screen from opposite ends of however wide we are
-		this.getMob('flik').offsetX = this.width-176
-		this.getMob('flik').offsetY = (this.height/4*3)-48
-		this.getMob('victor').offsetY = (this.height/4*3)-48
+		this.flik.offsetX = this.width-176
+		this.flik.offsetY = (this.height/4*3)-48
+		this.flik.indexZ = 0
 
-		this.getMob('flik').indexZ = 0
-		this.getMob('victor').indexZ = 1
+		this.victor.offsetY = (this.height/4*3)-48
+		this.victor.indexZ = 1
 
 		// Store the middle of the screen in x
 		this.charStopX = (this.width/2)-24
@@ -63,7 +66,7 @@ class Remake extends GameEngine {
 			// After 1.5 sec, cue Victor
 			setTimeout(()=>{
 				// Get him to walk 'east' until the middle minus 192px
-				this.getMob('victor').animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: this.charStopX+192, stopTile: [1,0], onStop: (mob) => {
+				this.victor.animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: this.charStopX+192, stopTile: [1,0], onStop: (mob) => {
 					setTimeout(()=>{
 						// Jump three times (it's zero based) becase you're pleased to see us
 						mob.animateStart({ name: 'jump', loop: 2, onStop: (mob)=>{
@@ -77,7 +80,7 @@ class Remake extends GameEngine {
 			// After 2 sec, cue Flik, cause he's slightly lazy
 			setTimeout(()=>{
 				// Get him to walk 'west' until the middle plus 192px
-				this.getMob('flik').animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX-192, stopTile: [1,0], onStop: (mob)=>{
+				this.flik.animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX-192, stopTile: [1,0], onStop: (mob)=>{
 					// Stand there and blink occasionally
 					mob.getMob('overlay').animateStart({ name: 'blinksouth', loop: true })
 				}})

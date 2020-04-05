@@ -138,6 +138,9 @@ class GameEngine {
 	redraw() {
 		this.clear = true
 
+		// Redraw All Scenes
+		this.redrawScenes()
+
 		// Redraw All Mobs
 		this.redrawMobs()
 	}
@@ -158,6 +161,12 @@ class GameEngine {
 		context.globalAlpha = this.globalAlpha;
 		context.scale(this.scale, this.scale)
 		context.translate(this.x, this.y)
+
+		// Ensure scene sort order
+		if(!this._sceneOrderMap) this.sortScenesZ()
+
+		// Ensure mob sort order
+		if(!this._mobOrderMap) this.sortMobsZ()
 
 		// Draw all the scenes in z-order
 		this.drawScenes(context)

@@ -1,9 +1,13 @@
 const _ = require('underscore')
 
+const HasMobsMixin = require('HasMobsMixin')
+
 // Mob is the base class for moving, animated subgraphics, also called 'Sprites' or 'Bobs' 
 class Mob {
 	constructor(options = {}) {
 		options = options || {}
+
+		HasMobsMixin(this)
 
 		// Asset is the graphical asset used for drawing this mob.
 		// Usually, an asset will be divided up into 'tiles' of a specified width and height. A mob will display one
@@ -35,10 +39,9 @@ class Mob {
 		this.rotate = typeof(options.rotate)=='undefined' ? 0 : options.rotate
 
 		// Private props
-		this._mobs = {}
 		this._animations = {}
 		this._currentanimation = null
-		this._doredraw = true
+		this.redraw()
 	}
 
 	// Mark the mob to be redrawn
@@ -47,7 +50,7 @@ class Mob {
 		this._doredraw = true
 
 		// Child Mobs
-		for(var i in this._mobs) this._mobs[i].redraw()
+		this.redrawMobs()
 	}
 
 	// Draw the mob into the supplied 2DContext
@@ -86,36 +89,6 @@ class Mob {
 
 		// Reset the redraw flag
 		this._doredraw = false
-	}
-
-	// Add a child mob with the specified name
-	addMob(name, mob) {
-		this._mobs[name] = mob
-		mob.name = name
-		if(mob.parent && mob.parent.removeMob) mob.parent.removeMob(name)
-		mob.parent = this
-	}
-
-	// Remove a child mob with the specified name
-	removeMob(name) {
-		delete this._mobs[name]
-		this.redraw()
-	}
-
-	// Return the child mob with the specified name
-	getMob(name) {
-		if (!this._mobs[name]) throw 'Mob not found: '+name
-		return this._mobs[name]
-	}
-
-	// Draw mobs in z-order
-	drawMobs(context) {
-		if(!this._mobOrder) this.sortMobsZ()
-		for(var i in this._mobOrder) this._mobOrder[i].draw(context)
-	}
-
-	sortMobsZ() {
-		this._mobOrder = _.sortBy(Object.values(this._mobs), 'indexZ')
 	}
 
 	// Add an animation with the specified name and definition (def)

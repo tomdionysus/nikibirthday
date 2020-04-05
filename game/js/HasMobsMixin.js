@@ -13,6 +13,7 @@ class HasMobsMixin extends Mixin {
 		mob.name = name
 		if(mob.parent && mob.parent.removeMob) mob.parent.removeMob(name)
 		mob.parent = this
+		return mob
 	}
 
 	removeMob(name) {

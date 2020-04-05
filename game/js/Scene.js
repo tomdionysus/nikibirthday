@@ -1,18 +1,23 @@
+const HasScenesMixin = require('HasScenesMixin')
 const HasMobsMixin = require('HasMobsMixin')
 
 class Scene {
 	constructor(options = {}) {
 		options = options || {}
 
+		// A Scene can have subscenes
+		HasScenesMixin(this, options)
+		
+		// A Scene can have mobs
 		HasMobsMixin(this)
 
 		// Asset is the graphical asset used for drawing this scene.
-		// Usually, an asset will be divided up into 'tiles' of a specified width and height. 
-		// A scene will display a large array of these tiles for each layer, and a scene may contain multiple layers.
+		// Usually, an asset will be divided up into 'layers' of a specified width and height. 
+		// A scene will display a large array of these layers for each layer, and a scene may contain multiple layers.
 		// Layers are drawn in ascending order, and each layer be associated with a group of mobs, based on the mob's indexZ.
 		this.asset = options.asset
 
-		// The width and height of the tiles in the asset
+		// The width and height of the layers in the asset
 		this.tileWidth = options.tileWidth
 		this.tileHeight = options.tileHeight
 
@@ -33,20 +38,19 @@ class Scene {
 		this.scale = typeof(options.scale)=='undefined' ? 1 : options.scale
 		this.rotate = typeof(options.rotate)=='undefined' ? 0 : options.rotate
 
-		this.tiles = options.tiles || []
+		this.layers = options.layers || { 0: [ ] }
 
-		// Private props
-		this._scenes = {}
-		this._doredraw = true
+		this.redraw()
 	}
 
 	redraw() {
 		this._doredraw = true
+		this.redrawMobs()
 	}
 
 	draw(context) {
 		// If we're not marked for a redraw or we're invisible, return
-		if(!this._doredraw || !this.visible) return
+		// if(!this._doredraw || !this.visible) return
 
 		// Save the context params
 		context.save()
@@ -57,11 +61,20 @@ class Scene {
 		context.scale(this.scale, this.scale)
 		context.rotate(this.rotate)
 
+		// Ensure scene sort order
+		if(!this._sceneOrderMap) this.sortScenesZ()
+
 		// Ensure mob sort order
 		if(!this._mobOrderMap) this.sortMobsZ()
-		
-		// Draw layers in order, with mobs
-		for(var i = 0; i<this.tiles.length; i++) {
+
+		// Get all valid indexZ values for layers, scenes and mobs
+		var layerKeys = Object.assign({}, this.layers)
+		Object.assign(layerKeys, this._sceneOrderMap)
+		Object.assign(layerKeys, this._mobOrderMap)
+		layerKeys = Object.keys(layerKeys).sort()
+
+		// Draw layers in order, with scenes and mobs
+		for(var i in layerKeys) {
 			this._drawLayer(context, i)
 		}
 
@@ -74,20 +87,22 @@ class Scene {
 
 	_drawLayer(context, indexZ) {
 		// Draw the layer
-		var layer = this.tiles[indexZ]
-		for(var y=0; y<layer.length; y++) {
-			for(var x=0; x<layer[y].length; x++) {
-				context.drawImage(
-					this.asset.element, 
-					this.layer[y][x][0]*this.tileWidth, 
-					this.layer[y][x][1]*this.tileHeight, 
-					this.tileWidth, 
-					this.tileHeight,
-					x*this.tileWidth, 
-					y*this.tileHeight,
-					this.tileWidth, 
-					this.tileHeight,
-				)
+		var layer = this.layers[indexZ]
+		if(layer) {
+			for(var y=0; y<layer.length; y++) {
+				for(var x=0; x<layer[y].length; x++) {
+					context.drawImage(
+						this.asset.element, 
+						this.layer[y][x][0]*this.tileWidth, 
+						this.layer[y][x][1]*this.tileHeight, 
+						this.tileWidth, 
+						this.tileHeight,
+						x*this.tileWidth, 
+						y*this.tileHeight,
+						this.tileWidth, 
+						this.tileHeight,
+					)
+				}
 			}
 		}
 
