@@ -72,9 +72,10 @@ class Remake extends GameEngine {
 			// After 2 sec, cue Flik, cause he's slightly lazy
 			setTimeout(()=>{
 				// Get him to walk 'west' until the middle plus 192px
-				this.flik.animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX-192, stopTile: [1,0], onStop: (mob)=>{
+				this.flik.animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX-192, stopTile: [1,3], onStop: (mob)=>{
 					// Stand there and blink occasionally
-					mob.getMob('overlay').animateStart({ name: 'blinksouth', loop: true })
+					// mob.animateStart({ name: 'floateast', loop: true })
+					mob.getMob('overlay').animateStart({ name: 'blinkeast', loop: true })
 				}})
 			},2000)
 		} else {

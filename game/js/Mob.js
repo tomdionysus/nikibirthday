@@ -145,6 +145,10 @@ class Mob {
 			if(frame.length>3 && frame[3]!=null) dx = frame[3]
 			if(frame.length>4 && frame[4]!=null) dy = frame[4]
 
+			// If deltaX/Y is specified, move us
+			if(dx) this.offsetX += dx
+			if(dy) this.offsetY += dy
+
 			// End Conditions
 			if (
 				// We have moved to or past a specifed boundary (maxX, maxY)
@@ -158,10 +162,6 @@ class Mob {
 
 			// Increment the frame
 			this._currentanimation.frame++
-
-			// If deltaX/Y is specified, move us
-			if(dx) this.offsetX += dx
-			if(dy) this.offsetY += dy
 
 			// End / Loop conditions
 			if(this._currentanimation.frame>=anim.length) {

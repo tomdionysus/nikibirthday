@@ -130,4 +130,7 @@ class Scene {
 	}
 }
 
+Scene.PERSPECTIVE_OVERHEAD = 1
+Scene.PERSPECTIVE_ANGLE = 2
+
 module.exports = Scene

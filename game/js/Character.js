@@ -16,10 +16,10 @@ class Character extends Mob {
 		this.offsetY = options.offsetY || 128
 
 		// Standard Character animations
-		this.addAnimation('walknorth', [ [0,1],[1,1],[2,1],[1,1] ])
-		this.addAnimation('walksouth', [ [0,0],[1,0],[2,0],[1,0] ])
-		this.addAnimation('walkwest',[ [2,2],[1,2],[0,2],[1,2] ])
-		this.addAnimation('walkeast', [ [2,3],[1,3],[0,3],[1,3] ])
+		this.addAnimation('walknorth', [ [0,1,120],[1,1,120],[2,1,120],[1,1,120] ])
+		this.addAnimation('walksouth', [ [0,0,120],[1,0,120],[2,0,120],[1,0,120] ])
+		this.addAnimation('walkwest',  [ [2,2,120,-8,2],[1,2,120,-8,-2],[0,2,120,-8,2],[1,2,120,-8,-2] ])
+		this.addAnimation('walkeast',  [ [2,3,120,8,2],[1,3,120,8,-2],[0,3,120,8,2],[1,3,120,8,-2] ])
 		this.addAnimation('jump', [
 			[ 1, 0, 50, 0, -10 ],
 			[ 0, 0, 50, 0, -10 ],
@@ -28,6 +28,9 @@ class Character extends Mob {
 			[ 0, 0, 50, 0, 10 ],
 			[ 1, 0, 50, 0, 10 ],
 		])
+
+		var v = []; for(var i=0; i<Math.PI*2; i=i+Math.PI*2/32) { v.push([ 2, 3, 50, 0, Math.round(Math.cos(i)*3) ]) }
+		this.addAnimation('floateast', v)
 
 		// Overlay and animations (blinking, etc)
 		var overlay = new Mob({ asset: this.asset, offsetX: 0, offsetY: 0, tile: null, tileWidth: 48, tileHeight: 96 })
