@@ -63,7 +63,6 @@ class Mob {
 
 		// Reset the origin to our coordinates (so child mobs are relative to us)
 		context.translate(this.offsetX, this.offsetY)
-		// Scale and rotate
 		context.scale(this.scale, this.scale)
 		context.rotate(this.rotate)
 
@@ -82,6 +81,7 @@ class Mob {
 			)
 		}
 
+		// Draw all child mobs in their own order
 		this.drawMobs(context)
 
 		// Restore the context params for the next thing being drawn

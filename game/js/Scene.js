@@ -18,8 +18,8 @@ class Scene {
 		this.asset = options.asset
 
 		// The width and height of the layers in the asset
-		this.tileWidth = options.tileWidth
-		this.tileHeight = options.tileHeight
+		this.tileWidth = options.tileWidth || 32
+		this.tileHeight = options.tileHeight || 32
 
 		// The current offsetX/Y from the origin of the container (the GameEngine, or the parent Scene)
 		this.offsetX = options.offsetX || 0
@@ -38,7 +38,25 @@ class Scene {
 		this.scale = typeof(options.scale)=='undefined' ? 1 : options.scale
 		this.rotate = typeof(options.rotate)=='undefined' ? 0 : options.rotate
 
-		this.layers = options.layers || { 0: [ ] }
+		// This is for testing and will be removed.
+		var m = []
+		var m2 = []
+		for(var y=0; y<16; y++) {
+			var r = [], r2 = []
+			for (var x=0; x<20; x++) {
+				r.push( [ 24+(Math.round(Math.random()*2)), Math.random()*2 ], [ 24+(Math.round(Math.random()*2)), Math.random()*2 ], [ 24+(Math.round(Math.random()*2)), Math.random()*2] )
+				r2.push[ null, null, null, null ]
+			}
+			m.push(r)
+			m2.push(r2)
+		}
+
+		m2[6][10] = [18,2]
+		m2[6][11] = [19,2]
+		m2[7][10] = [18,3]
+		m2[7][11] = [19,3]
+
+		this.layers = options.layers || { 0: m, 1: m2 }
 
 		this.redraw()
 	}
@@ -50,14 +68,13 @@ class Scene {
 
 	draw(context) {
 		// If we're not marked for a redraw or we're invisible, return
-		// if(!this._doredraw || !this.visible) return
+		if(!this._doredraw || !this.visible) return
 
 		// Save the context params
 		context.save()
 
 		// Reset the origin to our coordinates (so child mobs are relative to us)
 		context.translate(this.offsetX, this.offsetY)
-		// Scale and rotate
 		context.scale(this.scale, this.scale)
 		context.rotate(this.rotate)
 
@@ -74,9 +91,7 @@ class Scene {
 		layerKeys = Object.keys(layerKeys).sort()
 
 		// Draw layers in order, with scenes and mobs
-		for(var i in layerKeys) {
-			this._drawLayer(context, i)
-		}
+		for(var i in layerKeys) this._drawLayer(context, i)
 
 		// Restore the context params for the next thing being drawn
 		context.restore()
@@ -91,10 +106,11 @@ class Scene {
 		if(layer) {
 			for(var y=0; y<layer.length; y++) {
 				for(var x=0; x<layer[y].length; x++) {
+					if(!layer[y][x]) continue
 					context.drawImage(
 						this.asset.element, 
-						this.layer[y][x][0]*this.tileWidth, 
-						this.layer[y][x][1]*this.tileHeight, 
+						layer[y][x][0]*this.tileWidth, 
+						layer[y][x][1]*this.tileHeight, 
 						this.tileWidth, 
 						this.tileHeight,
 						x*this.tileWidth, 

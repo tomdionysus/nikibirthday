@@ -158,9 +158,9 @@ class GameEngine {
 		context.save()
 
 		// Set Alpha, scale
-		context.globalAlpha = this.globalAlpha;
 		context.scale(this.scale, this.scale)
 		context.translate(this.x, this.y)
+		context.globalAlpha = this.globalAlpha;
 
 		// Ensure scene sort order
 		if(!this._sceneOrderMap) this.sortScenesZ()

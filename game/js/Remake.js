@@ -34,19 +34,11 @@ class Remake extends GameEngine {
 	}
 
 	init(callback) {
-		this.main = this.addScene('main', new Scene({ asset: this.getAsset('kobold.outer') }))
+		this.main = this.addScene('main', new Scene({ asset: this.getAsset('kobold.outer'), offsetY: this.height-320 }))
 
 		// Instantiate our characters
-		this.victor = this.main.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), offsetX: 128, offsetY: 128, tile: [1,3] }))
-		this.flik = this.main.addMob('flik', new Character({ asset: this.getAsset('flikWalk'), offsetX: 1024, offsetY: 128, tile: [1,2] }))
-
-		// Start Victor and Flik 3/4 of the way down the screen from opposite ends of however wide we are
-		this.flik.offsetX = this.width-176
-		this.flik.offsetY = (this.height/4*3)-48
-		this.flik.indexZ = 0
-
-		this.victor.offsetY = (this.height/4*3)-48
-		this.victor.indexZ = 1
+		this.victor = this.main.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), offsetX: 128, offsetY: 0, tile: [1,3] }))
+		this.flik = this.main.addMob('flik', new Character({ asset: this.getAsset('flikWalk'), offsetX: this.width-176, offsetY: 0, tile: [1,2] }))
 
 		// Store the middle of the screen in x
 		this.charStopX = (this.width/2)-24
