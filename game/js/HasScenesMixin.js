@@ -8,6 +8,7 @@ class HasScenesMixin extends Mixin {
 		obj._sceneOrderMap = null
 	}
 
+	// Add the supplied scene to this container with the given name
 	addScene(name, scene) {
 		this._scenes[name] = scene
 		scene.name = name
@@ -16,37 +17,41 @@ class HasScenesMixin extends Mixin {
 		return scene
 	}
 
+	// Remove the named scene from this container, will trigger a redraw if defined on the container class
 	removeScene(name) {
 		delete this._scenes[name]
-		this.redraw()
+		if(this.redraw) this.redraw()
 	}
 
+	// Return the named scene. Throws an exception if the scene is not found.
 	getScene(name) {
 		if (!this._scenes[name]) throw 'Scene not found: '+name
 		return this._scenes[name]
 	}
 
 	// Draw scenes in z-order
-	drawScenes(context, indexZ = null) {
+	drawScenes(context, z = null) {
 		if(!this._sceneOrder) this.sortScenesZ()
-		if(indexZ === null) {
+		if(z === null) {
 			for(var i in this._sceneOrder) this._sceneOrder[i].draw(context)
 		} else {
-			for(var i in this._sceneOrderMap[indexZ]) this._sceneOrderMap[indexZ][i].draw(context)
+			for(var i in this._sceneOrderMap[z]) this._sceneOrderMap[z][i].draw(context)
 		}
 	}
 
+	// Recalculate the draw order of all scenes based on their Z coordinate
 	sortScenesZ() {
-		this._sceneOrder = _.sortBy(Object.values(this._scenes), 'indexZ')
+		this._sceneOrder = _.sortBy(Object.values(this._scenes), 'z')
 		var last = 0
 		this._sceneOrderMap = {}
 		for(var i in this._sceneOrder) {
 			var scene = this._sceneOrder[i]
-			this._sceneOrderMap[scene.indexZ] = this._sceneOrderMap[scene.indexZ] || []
-			this._sceneOrderMap[scene.indexZ].push(scene)
+			this._sceneOrderMap[scene.z] = this._sceneOrderMap[scene.z] || []
+			this._sceneOrderMap[scene.z].push(scene)
 		}
 	}
 
+	// Call redraw on all scenes in this container
 	redrawScenes() {
 		for(var i in this._scenes) this._scenes[i].redraw()
 	}

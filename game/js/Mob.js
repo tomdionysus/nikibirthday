@@ -22,12 +22,12 @@ class Mob {
 		// The current tile coords as an array [x,y]
 		this.tile = typeof(options.tile)=='undefined' ? null : options.tile
 
-		// The current x/Y from the origin of the container (the Scene, or the parent Mob)
+		// The current X/Y from the origin of the container (the Scene, or the parent Mob)
 		this.x = options.x || 0
 		this.y = options.y || 0
 
 		// The Z index, in the stack of the container (the Scene, or the parent Mob)
-		this.indexZ = options.indexZ || 0
+		this.z = options.z || 0
 		
 		// The Parent container (the Scene, or the parent Mob)
 		this.parent = typeof(options.parent)=='undefined' ? null : options.parent

@@ -30,24 +30,24 @@ class HasMobsMixin extends Mixin {
 	}
 
 	// Draw mobs in z-order
-	drawMobs(context, indexZ = null) {
+	drawMobs(context, z = null) {
 		if(!this._mobOrder) this.sortMobsZ()
-		if(indexZ === null) {
+		if(z === null) {
 			for(var i in this._mobOrder) this._mobOrder[i].draw(context)
 		} else {
-			for(var i in this._mobOrderMap[indexZ]) this._mobOrderMap[indexZ][i].draw(context)
+			for(var i in this._mobOrderMap[z]) this._mobOrderMap[z][i].draw(context)
 		}
 	}
 
 	// Recalculate the draw order of all mobs based on their Z coordinate
 	sortMobsZ() {
-		this._mobOrder = _.sortBy(Object.values(this._mobs), 'indexZ')
+		this._mobOrder = _.sortBy(Object.values(this._mobs), 'z')
 		var last = 0
 		this._mobOrderMap = {}
 		for(var i in this._mobOrder) {
 			var mob = this._mobOrder[i]
-			this._mobOrderMap[mob.indexZ] = this._mobOrderMap[mob.indexZ] || []
-			this._mobOrderMap[mob.indexZ].push(mob)
+			this._mobOrderMap[mob.z] = this._mobOrderMap[mob.z] || []
+			this._mobOrderMap[mob.z].push(mob)
 		}
 	}
 

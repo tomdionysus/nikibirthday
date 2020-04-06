@@ -14,19 +14,19 @@ class Scene {
 		// Asset is the graphical asset used for drawing this scene.
 		// Usually, an asset will be divided up into 'layers' of a specified width and height. 
 		// A scene will display a large array of these layers for each layer, and a scene may contain multiple layers.
-		// Layers are drawn in ascending order, and each layer be associated with a group of mobs, based on the mob's indexZ.
+		// Layers are drawn in ascending order, and each layer be associated with a group of mobs, based on the mob's z.
 		this.asset = options.asset
 
 		// The width and height of the layers in the asset
 		this.tileWidth = options.tileWidth || 32
 		this.tileHeight = options.tileHeight || 32
 
-		// The current x/Y from the origin of the container (the GameEngine, or the parent Scene)
+		// The current X/Y from the origin of the container (the GameEngine, or the parent Scene)
 		this.x = options.x || 0
 		this.y = options.y || 0
 
 		// The Z index, in the stack of the container (the GameEngine, or the parent Scene)
-		this.indexZ = options.indexZ || 0
+		this.z = options.z || 0
 		
 		// The Parent container (the GameEngine, or the parent Scene)
 		this.parent = typeof(options.parent)=='undefined' ? null : options.parent
@@ -84,7 +84,7 @@ class Scene {
 		// Ensure mob sort order
 		if(!this._mobOrderMap) this.sortMobsZ()
 
-		// Get all valid indexZ values for layers, scenes and mobs
+		// Get all valid z values for layers, scenes and mobs
 		var layerKeys = Object.assign({}, this.layers)
 		Object.assign(layerKeys, this._sceneOrderMap)
 		Object.assign(layerKeys, this._mobOrderMap)
@@ -100,9 +100,9 @@ class Scene {
 		this._doredraw = false
 	}
 
-	_drawLayer(context, indexZ) {
+	_drawLayer(context, z) {
 		// Draw the layer
-		var layer = this.layers[indexZ]
+		var layer = this.layers[z]
 		if(layer) {
 			for(var y=0; y<layer.length; y++) {
 				for(var x=0; x<layer[y].length; x++) {
@@ -123,10 +123,10 @@ class Scene {
 		}
 
 		// Next draw any subscenes for this layer
-		this.drawScenes(context, indexZ)
+		this.drawScenes(context, z)
 
 		// Now the Mobs for this layer
-		this.drawMobs(context, indexZ)
+		this.drawMobs(context, z)
 	}
 }
 
