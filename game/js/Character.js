@@ -12,8 +12,8 @@ class Character extends Mob {
 
 		// The default tile is facing south 
 		this.tile = options.tile || [1,3]
-		this.offsetX = options.offsetX || 128
-		this.offsetY = options.offsetY || 128
+		this.x = options.x || 128
+		this.y = options.y || 128
 
 		// Standard Character animations
 		this.addAnimation('walknorth', [ [0,1,120],[1,1,120],[2,1,120],[1,1,120] ])
@@ -33,7 +33,7 @@ class Character extends Mob {
 		this.addAnimation('floateast', v)
 
 		// Overlay and animations (blinking, etc)
-		var overlay = new Mob({ asset: this.asset, offsetX: 0, offsetY: 0, tile: null, tileWidth: 48, tileHeight: 96 })
+		var overlay = new Mob({ asset: this.asset, x: 0, y: 0, tile: null, tileWidth: 48, tileHeight: 96 })
 		overlay.addAnimation('blinksouth', [ [ 3, 0, 150 ], [ null, null, Math.round(4000+(Math.random()*2000)) ], ])
 		overlay.addAnimation('blinkwest', [ [ 3, 2, 150 ], [ null, null, Math.round(4000+(Math.random()*2000)) ], ])
 		overlay.addAnimation('blinkeast', [ [ 3, 3, 150 ], [ null, null, Math.round(4000+(Math.random()*2000)) ], ])

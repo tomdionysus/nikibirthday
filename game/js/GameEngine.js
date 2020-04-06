@@ -319,8 +319,8 @@ class GameEngine {
 	}
 
 	_setMouseCoords(e) {
-		this.mouseX = (e.offsetX/this.scale)-this.x
-		this.mouseY = (e.offsetY/this.scale)-this.y
+		this.mouseX = (e.x/this.scale)-this.x
+		this.mouseY = (e.y/this.scale)-this.y
 	}
 
 	drawHUD(context) {

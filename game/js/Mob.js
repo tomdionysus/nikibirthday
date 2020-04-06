@@ -21,9 +21,9 @@ class Mob {
 		// The current tile coords as an array [x,y]
 		this.tile = typeof(options.tile)=='undefined' ? null : options.tile
 
-		// The current offsetX/Y from the origin of the container (the Scene, or the parent Mob)
-		this.offsetX = options.offsetX || 0
-		this.offsetY = options.offsetY || 0
+		// The current x/Y from the origin of the container (the Scene, or the parent Mob)
+		this.x = options.x || 0
+		this.y = options.y || 0
 
 		// The Z index, in the stack of the container (the Scene, or the parent Mob)
 		this.indexZ = options.indexZ || 0
@@ -62,7 +62,7 @@ class Mob {
 		context.save()
 
 		// Reset the origin to our coordinates (so child mobs are relative to us)
-		context.translate(this.offsetX, this.offsetY)
+		context.translate(this.x, this.y)
 		context.scale(this.scale, this.scale)
 		context.rotate(this.rotate)
 
@@ -96,8 +96,8 @@ class Mob {
 	// * tx - Tile X Coordinate in the asset in units of tileWidth 
 	// * ty - Tile Y Coordinate in the asset in units of tileHeight
 	// * dt - (optional) Delay after this frame
-	// * dx - (optional) offsetX Delta at this frame (move x pixels) 
-	// * dx - (optional) offsetY Delta at this frame (move y pixels) 
+	// * dx - (optional) x Delta at this frame (move x pixels) 
+	// * dx - (optional) y Delta at this frame (move y pixels) 
 	addAnimation(name, def) {
 		this._animations[name] = def
 	}
@@ -108,12 +108,12 @@ class Mob {
 	// * delay    - Default delay for each frame (unless overridden by the dt in the frame)
 	// * frame    - (optional) The starting frame, defaults to 0
 	// * loop     - (optional) Loop the animation (i) indefinitely if 'true' (ii) this number of times.
-	// * dx       - (optional) offsetX Delta at every frame (move x pixels), unless overridden by the dx in the frame
-	// * dy       - (optional) offsetY Delta at every frame (move y pixels), unless overridden by the dy in the frame
-	// * minX     - (optional) Stop the animation when the offsetX is equal or less than this value
-	// * minY     - (optional) Stop the animation when the offsetY is equal or less than this value
-	// * maxX     - (optional) Stop the animation when the offsetX is equal or greater than this value
-	// * maxY     - (optional) Stop the animation when the offsetY is equal or greater than this value
+	// * dx       - (optional) x Delta at every frame (move x pixels), unless overridden by the dx in the frame
+	// * dy       - (optional) y Delta at every frame (move y pixels), unless overridden by the dy in the frame
+	// * minX     - (optional) Stop the animation when the x is equal or less than this value
+	// * minY     - (optional) Stop the animation when the y is equal or less than this value
+	// * maxX     - (optional) Stop the animation when the x is equal or greater than this value
+	// * maxY     - (optional) Stop the animation when the y is equal or greater than this value
 	// * stopTile - (optional) Set this tile [x,y] when the animation stops
 	// * onStop   - (optional) A function to call when the animation stops, fn(mob) where mob is this mob.
 	animateStart(animation) {
@@ -146,16 +146,16 @@ class Mob {
 			if(frame.length>4 && frame[4]!=null) dy = frame[4]
 
 			// If deltaX/Y is specified, move us
-			if(dx) this.offsetX += dx
-			if(dy) this.offsetY += dy
+			if(dx) this.x += dx
+			if(dy) this.y += dy
 
 			// End Conditions
 			if (
 				// We have moved to or past a specifed boundary (maxX, maxY)
-				(this._currentanimation.maxX && this.offsetX>=this._currentanimation.maxX) ||
-				(this._currentanimation.maxY && this.offsetY>=this._currentanimation.maxY) ||
-				(this._currentanimation.minX && this.offsetX<=this._currentanimation.minX) ||
-				(this._currentanimation.minY && this.offsetY<=this._currentanimation.minY)
+				(this._currentanimation.maxX && this.x>=this._currentanimation.maxX) ||
+				(this._currentanimation.maxY && this.y>=this._currentanimation.maxY) ||
+				(this._currentanimation.minX && this.x<=this._currentanimation.minX) ||
+				(this._currentanimation.minY && this.y<=this._currentanimation.minY)
 			) {
 				return this.animateStop(Mob.STOPSTATUS_COMPLETED)
 			}

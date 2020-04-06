@@ -21,9 +21,9 @@ class Scene {
 		this.tileWidth = options.tileWidth || 32
 		this.tileHeight = options.tileHeight || 32
 
-		// The current offsetX/Y from the origin of the container (the GameEngine, or the parent Scene)
-		this.offsetX = options.offsetX || 0
-		this.offsetY = options.offsetY || 0
+		// The current x/Y from the origin of the container (the GameEngine, or the parent Scene)
+		this.x = options.x || 0
+		this.y = options.y || 0
 
 		// The Z index, in the stack of the container (the GameEngine, or the parent Scene)
 		this.indexZ = options.indexZ || 0
@@ -74,7 +74,7 @@ class Scene {
 		context.save()
 
 		// Reset the origin to our coordinates (so child mobs are relative to us)
-		context.translate(this.offsetX, this.offsetY)
+		context.translate(this.x, this.y)
 		context.scale(this.scale, this.scale)
 		context.rotate(this.rotate)
 
