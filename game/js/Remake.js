@@ -16,7 +16,7 @@ class Remake extends GameEngine {
 		this.showHUD = false
 
 		// Start faded out
-		this.globalAlpha = 0.1
+		this.globalAlpha = 0.0
 
 		// Scale
 		this.scale = 1
@@ -34,7 +34,7 @@ class Remake extends GameEngine {
 	}
 
 	init(callback) {
-		this.main = this.addScene('main', new Scene({ asset: this.getAsset('kobold.outer'), offsetY: this.height-320 }))
+		this.main = this.addScene('main', new Scene({ asset: this.getAsset('kobold.outer'), offsetY: this.height-640 }))
 
 		// Instantiate our characters
 		this.victor = this.main.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), offsetX: 128, offsetY: 0, tile: [1,3] }))

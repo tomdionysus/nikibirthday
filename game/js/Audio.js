@@ -4,6 +4,8 @@ const Browser = require('Browser')
 class Audio {
 	constructor(options) {
 		options = options || {}
+		this.Browser = options.Browser || Browser
+		
 		this.src = options.src
 		this.type = options.type
 
@@ -15,12 +17,12 @@ class Audio {
 	}
 
 	load(callback) {
-		this.element = Browser.document.createElement('audio')
+		this.element = this.Browser.document.createElement('audio')
 		this._callonloaded = callback
 		this.element.oncanplaythrough = this._oncanplaythrough.bind(this)
 		this.element.onloadedmetadata = this._onloadedmetadata.bind(this)
 		this.element.ontimeupdate = this._ontimeupdate.bind(this)
-		var source = Browser.document.createElement('source')
+		var source = this.Browser.document.createElement('source')
 		source.src = this.src
 		source.type = this.type
 		this.element.appendChild(source)

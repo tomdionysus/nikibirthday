@@ -2,6 +2,7 @@ const async = require('async')
 const _ = require('underscore')
 
 const Browser = require('Browser')
+
 const Asset = require('Asset')
 const Audio = require('Audio')
 const Mob = require('Mob')
@@ -14,6 +15,7 @@ const HasScenesMixin = require('HasScenesMixin')
 class GameEngine {
 	constructor(options) {
 		options = options || {}
+		this.Browser = options.Browser || Browser
 
 		// A GameEngine has a collection of Scenes
 		HasScenesMixin(this, options)
@@ -61,7 +63,7 @@ class GameEngine {
 	start(callback) {
 		console.debug('starting')
 		if(this.processKey) {
-			Browser.document.onkeyup = (e) => { this.processKey(e) }
+			this.Browser.document.onkeyup = (e) => { this.processKey(e) }
 		}
 
 		async.series([
@@ -181,7 +183,7 @@ class GameEngine {
 		
 		this.clear = false
 
-		if(this.running) Browser.window.requestAnimationFrame(this.tick.bind(this),0)
+		if(this.running) this.Browser.window.requestAnimationFrame(this.tick.bind(this),0)
 	}
 
 	loadAssets(callback) {
@@ -205,8 +207,8 @@ class GameEngine {
 	}
 
 	bootElement(callback) {
-		this.target = Browser.document.getElementById(this.targetId)
-		this.element = Browser.document.createElement('canvas')
+		this.target = this.Browser.document.getElementById(this.targetId)
+		this.element = this.Browser.document.createElement('canvas')
 		this.document = this.target.ownerDocument
 		this.window = this.document.defaultView || this.document.parentWindow
 
