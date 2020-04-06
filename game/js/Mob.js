@@ -7,6 +7,7 @@ class Mob {
 	constructor(options = {}) {
 		options = options || {}
 
+		// Mobs can have child mobs
 		HasMobsMixin(this)
 
 		// Asset is the graphical asset used for drawing this mob.

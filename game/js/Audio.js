@@ -16,6 +16,7 @@ class Audio {
 		this._callonloaded = null
 	}
 
+	// Load the audio into a DOM 'audio' element
 	load(callback) {
 		this.element = this.Browser.document.createElement('audio')
 		this._callonloaded = callback
@@ -28,10 +29,12 @@ class Audio {
 		this.element.appendChild(source)
 	}
 
+	// Play the audio from the current position
 	play() {
 		this.element.play()
 	}
 
+	// Play the audio from the start time index to the end time index and optionally loop 
 	playRange(start, end, loop = false) {
 		this.startTime = start
 		this.endTime = end
@@ -39,20 +42,24 @@ class Audio {
 		this.play()
 	}
 
+	// Pause the audio
 	pause() {
 		this.element.pause()
 	}
 
+	// Stop the audio and reset it to the beginning
 	stop() {
 		this.element.oncanplaythrough = null
 		this.element.pause()
 		this.element.currentTime = '0'
 	}
 
+	// Fade out the audio over the given duration
 	fadeOut(duration = 1000) { 
 		this._fade(0, duration, this.pause.bind(this))
 	}
 
+	// Play and fade in the audio over the given duration
 	fadeIn(duration = 1000) { 
 		this.element.volume = 0
 		this.play()

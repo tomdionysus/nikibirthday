@@ -8,6 +8,7 @@ class HasMobsMixin extends Mixin {
 		obj._mobOrderMap = null
 	}
 
+	// Add a mob to this container with the given name
 	addMob(name, mob) {
 		this._mobs[name] = mob
 		mob.name = name
@@ -16,11 +17,13 @@ class HasMobsMixin extends Mixin {
 		return mob
 	}
 
+	// Remove a named mob from this container, will trigger a redraw if defined on the container class
 	removeMob(name) {
 		delete this._mobs[name]
-		this.redraw()
+		if(this.redraw) this.redraw()
 	}
 
+	// Return the mob with the given name. Throws an exception if the mob is not found.
 	getMob(name) {
 		if (!this._mobs[name]) throw 'Mob not found: '+name
 		return this._mobs[name]
@@ -36,6 +39,7 @@ class HasMobsMixin extends Mixin {
 		}
 	}
 
+	// Recalculate the draw order of all mobs based on their Z coordinate
 	sortMobsZ() {
 		this._mobOrder = _.sortBy(Object.values(this._mobs), 'indexZ')
 		var last = 0
@@ -47,6 +51,7 @@ class HasMobsMixin extends Mixin {
 		}
 	}
 
+	// Call redraw on all mobs in this container
 	redrawMobs() {
 		for(var i in this._mobs) this._mobs[i].redraw()
 	}
