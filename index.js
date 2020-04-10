@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const path = require('path')
 
 const Server = require("./lib/Server")
 const Logger = require("./lib/Logger")
@@ -21,7 +22,7 @@ function main() {
 	logger.log("Logging Level %s","----",Logger.logLevelToString(logger.logLevel))
 
 	// Dependencies
-	var jsCompiler = new JSCompiler({ logger: logger, beautify: true, recompile: true })
+	var jsCompiler = new JSCompiler({ logger: logger, beautify: true, recompile: true, watchPaths: [ path.join(__dirname, 'node_modules/tenkai') ] })
 
 	// Main Server
 	var svr = new Server({
