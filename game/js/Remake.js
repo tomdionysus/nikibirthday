@@ -56,7 +56,7 @@ class Remake extends GameEngine {
 			// After 1.5 sec, cue Victor
 			setTimeout(()=>{
 				async.series([
-					(cb)=>{ this.victor.animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: 512, stopTile: [1,0], onStop: cb }) },
+					(cb)=>{ this.victor.animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: 368, stopTile: [1,0], onStop: cb }) },
 					(cb)=>{ this.victor.animateStart({ name: 'walksouth', loop: true, delay: 120, dy: 10, maxY: 176, stopTile: [1,0], onStop: cb }) },
 					(cb)=>{ this.victor.animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: 128, stopTile: [1,0], onStop: cb }) }
 				])
