@@ -1,4 +1,5 @@
-const { GameEngine, Character, Scene, Mob } = require('tenkai')
+const { GameEngine, Scene, Mob } = require('tenkai')
+const Character = require('./Character')
 const async = require('async')
 
 class Remake extends GameEngine {
@@ -58,19 +59,20 @@ class Remake extends GameEngine {
 				async.series([
 					(cb)=>{ this.victor.animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: 368, stopTile: [1,0], onStop: cb }) },
 					(cb)=>{ this.victor.animateStart({ name: 'walksouth', loop: true, delay: 120, dy: 10, maxY: 176, stopTile: [1,0], onStop: cb }) },
+					(cb)=>{ this.flik.animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: 368, stopTile: [1,0], onStop: cb }) },
 					(cb)=>{ this.victor.animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: 128, stopTile: [1,0], onStop: cb }) }
 				])
 			},1500)
 
 			// After 2 sec, cue Flik, cause he's slightly lazy
-			setTimeout(()=>{
-				// Get him to walk 'west' until the middle plus 192px
-				this.flik.animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX, stopTile: [1,0], onStop: (err, mob)=>{
-					// Stand there and blink occasionally
-					// mob.animateStart({ name: 'floateast', loop: true })
-					mob.getMob('overlay').animateStart({ name: 'blinksouth', loop: true })
-				}})
-			},2000)
+			// setTimeout(()=>{
+			// 	// Get him to walk 'west' until the middle plus 192px
+			// 	this.flik.animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: this.charStopX, stopTile: [1,0], onStop: (err, mob)=>{
+			// 		// Stand there and blink occasionally
+			// 		// mob.animateStart({ name: 'floateast', loop: true })
+			// 		mob.getMob('overlay').animateStart({ name: 'blinksouth', loop: true })
+			// 	}})
+			// },2000)
 		} else {
 			this.getAudio('adventure').fadeOut(3000)
 			this.playing = false
