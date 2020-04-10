@@ -1,7 +1,4 @@
-const GameEngine = require('GameEngine')
-const Character = require('Character')
-const Scene = require('Scene')
-const Mob = require('Mob')
+const { GameEngine, Character, Scene, Mob } = require('tenkai')
 
 class Remake extends GameEngine {
 	constructor(options) {

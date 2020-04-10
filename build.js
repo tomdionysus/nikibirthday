@@ -2,7 +2,6 @@
 
 const Server = require("./lib/Server")
 const Logger = require("./lib/Logger")
-const SassCompiler = require("./lib/SassCompiler")
 const JSCompiler = require("./lib/JSCompiler")
 
 const fs = require('fs')
@@ -28,8 +27,6 @@ async.series([
 			(cb) => { ncp('./electron/', './build', cb) },
 			// Copy All assets etc
 			(cb) => { ncp('./game/public/', './build', cb) },
-			// Compile SASS
-			(cb) => { compileSASS('./build/css/app.css', cb) },
 			// Compile JS
 			(cb) => { compileJS('./build/js/app.js', cb) },
 		], cb)
@@ -41,15 +38,6 @@ async.series([
 	}
 	logger.info("Build Complete")
 })
-
-function compileSASS(filename, cb) {
-	var sassCompiler = new SassCompiler({ logger: logger, recompile: false })
-	sassCompiler.register('./game/sass/app.scss', (err,src) => {
-		if(err) return cb(err)
-		fs.writeFile(filename, src.css, cb)
-	})
-
-}
 
 function compileJS(filename, cb) {
 	var jsCompiler = new JSCompiler({ logger: logger, beautify: false })

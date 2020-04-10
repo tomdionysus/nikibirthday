@@ -2,7 +2,6 @@
 
 const Server = require("./lib/Server")
 const Logger = require("./lib/Logger")
-const SassCompiler = require("./lib/SassCompiler")
 const JSCompiler = require("./lib/JSCompiler")
 
 const routes = require('./config/routes')
@@ -22,12 +21,10 @@ function main() {
 	logger.log("Logging Level %s","----",Logger.logLevelToString(logger.logLevel))
 
 	// Dependencies
-	var sassCompiler = new SassCompiler({ logger: logger, recompile: true })
 	var jsCompiler = new JSCompiler({ logger: logger, beautify: true, recompile: true })
 
 	// Main Server
 	var svr = new Server({
-		sassCompiler: sassCompiler,
 		jsCompiler: jsCompiler,
 		logger: logger,
 		port: port,
