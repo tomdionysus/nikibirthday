@@ -1,5 +1,6 @@
 const { GameEngine, Scene, Mob } = require('tenkai')
 const Character = require('./Character')
+const GrassScene = require('./GrassScene')
 const async = require('async')
 
 class Remake extends GameEngine {
@@ -33,7 +34,7 @@ class Remake extends GameEngine {
 	}
 
 	init(callback) {
-		this.main = this.addScene('main', new Scene({ asset: this.getAsset('kobold.outer'), y: 0, perspectiveMode: Scene.PERSPECTIVE_ANGLE }))
+		this.main = this.addScene('main', new GrassScene({ asset: this.getAsset('kobold.outer'), y: 0 }))
 
 		// Instantiate our characters
 		this.victor = this.main.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), x: 96, y: 80, z: 1, tile: [1,3] }))

@@ -22,6 +22,7 @@ function main() {
 	logger.log("Logging Level %s","----",Logger.logLevelToString(logger.logLevel))
 
 	// Dependencies
+	// DEV: For development purposes, the compiler also watches the core tenkai package for changes.
 	var jsCompiler = new JSCompiler({ logger: logger, beautify: true, recompile: true, watchPaths: [ path.join(__dirname, 'node_modules/tenkai') ] })
 
 	// Main Server
