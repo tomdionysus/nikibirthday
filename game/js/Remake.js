@@ -14,7 +14,7 @@ class Remake extends GameEngine {
 		// No scrolling, zooming or debug HUD
 		this.enableScroll = false
 		this.enableZoom = false
-		this.showHUD = true
+		this.showHUD = false
 
 		// Start faded out
 		this.globalAlpha = 1
