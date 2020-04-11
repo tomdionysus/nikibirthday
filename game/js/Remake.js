@@ -1,7 +1,8 @@
-const { GameEngine, Scene, Mob } = require('tenkai')
+const async = require('async')
+
+const { GameEngine, BackgroundScene, Mob } = require('tenkai')
 const Character = require('./Character')
 const GrassScene = require('./GrassScene')
-const async = require('async')
 
 class Remake extends GameEngine {
 	constructor(options) {
@@ -16,7 +17,7 @@ class Remake extends GameEngine {
 		this.showHUD = false
 
 		// Start faded out
-		this.globalAlpha = 0.0
+		this.globalAlpha = 1
 
 		// Scale
 		this.scale = 1
@@ -24,6 +25,8 @@ class Remake extends GameEngine {
 		// Bring in that cute Kobold village
 		this.addAsset('kobold.inner','./assets/KoboldVillageInner.png')
 		this.addAsset('kobold.outer','./assets/KoboldVillageOuter.png')
+
+		this.addAsset('forestmountain','./backgrounds/forestmountain1.jpg')
 
 		// And the boys, Flik and Victor
 		this.addAsset('flikWalk','./mobs/FlikWalk.png')
@@ -34,11 +37,12 @@ class Remake extends GameEngine {
 	}
 
 	init(callback) {
-		this.main = this.addScene('main', new GrassScene({ asset: this.getAsset('kobold.outer'), y: 0 }))
+		this.bg = this.addScene('bg', new BackgroundScene({ asset: this.getAsset('forestmountain'), z: 0, scale: 1.2 }))
+		this.main = this.addScene('main', new GrassScene({ asset: this.getAsset('kobold.outer'), z: 1, y: this.height-256 }))
 
 		// Instantiate our characters
-		this.victor = this.main.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), x: 96, y: 80, z: 1, tile: [1,3] }))
-		this.flik = this.main.addMob('flik', new Character({ asset: this.getAsset('flikWalk'), x: 256, y: 128, z: 1, tile: [1,2] }))
+		this.victor = this.main.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), x: 96, y: 32, z: 1, tile: [1,3] }))
+		this.flik = this.main.addMob('flik', new Character({ asset: this.getAsset('flikWalk'), x: 256, y: 80, z: 1, tile: [1,2] }))
 
 		// Store the middle of the screen in x
 		this.charStopX = (this.width/2)-24
@@ -52,14 +56,11 @@ class Remake extends GameEngine {
 			this.getAudio('adventure').fadeIn(4500)
 			this.playing = true
 
-			// Start the global fade in, 3 seconds
-			this.fadeIn(3000)
-
 			// After 1.5 sec, cue Victor
 			setTimeout(()=>{
 				async.series([
 					(cb)=>{ this.victor.animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: 368, stopTile: [1,0], onStop: cb }) },
-					(cb)=>{ this.victor.animateStart({ name: 'walksouth', loop: true, delay: 120, dy: 10, maxY: 176, stopTile: [1,0], onStop: cb }) },
+					(cb)=>{ this.victor.animateStart({ name: 'walksouth', loop: true, delay: 120, dy: 10, maxY: 128, stopTile: [1,0], onStop: cb }) },
 					(cb)=>{ this.flik.animateStart({ name: 'walkeast', loop: true, delay: 120, dx: 10, maxX: 368, stopTile: [1,0], onStop: cb }) },
 					(cb)=>{ this.victor.animateStart({ name: 'walkwest', loop: true, delay: 120, dx: -10, minX: 128, stopTile: [1,0], onStop: cb }) }
 				])
@@ -77,7 +78,6 @@ class Remake extends GameEngine {
 		} else {
 			this.getAudio('adventure').fadeOut(3000)
 			this.playing = false
-			this.fadeOut(3000)
 		}
 	}
 }
