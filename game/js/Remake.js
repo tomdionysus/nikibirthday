@@ -1,6 +1,6 @@
 const async = require('async')
 
-const { GameEngine, BackgroundScene, Mob } = require('tenkai')
+const { GameEngine, BackgroundScene, Entity } = require('tenkai')
 const Character = require('./Character')
 const GrassScene = require('./GrassScene')
 
@@ -14,7 +14,7 @@ class Remake extends GameEngine {
 		// No scrolling, zooming or debug HUD
 		this.enableScroll = false
 		this.enableZoom = false
-		this.showHUD = false
+		this.showHUD = true
 
 		// Start faded out
 		this.globalAlpha = 1
@@ -41,8 +41,8 @@ class Remake extends GameEngine {
 		this.main = this.addScene('main', new GrassScene({ asset: this.getAsset('kobold.outer'), z: 1, y: this.height-256 }))
 
 		// Instantiate our characters
-		this.victor = this.main.addMob('victor', new Character({ asset: this.getAsset('victorWalk'), x: 96, y: 32, z: 1, tile: [1,3] }))
-		this.flik = this.main.addMob('flik', new Character({ asset: this.getAsset('flikWalk'), x: 256, y: 80, z: 1, tile: [1,2] }))
+		this.victor = this.main.addEntity('victor', new Character({ asset: this.getAsset('victorWalk'), x: 96, y: 32, z: 1, tile: [1,3] }))
+		this.flik = this.main.addEntity('flik', new Character({ asset: this.getAsset('flikWalk'), x: 256, y: 80, z: 1, tile: [1,2] }))
 
 		// Store the middle of the screen in x
 		this.charStopX = (this.width/2)-24
@@ -79,6 +79,11 @@ class Remake extends GameEngine {
 			this.getAudio('adventure').fadeOut(3000)
 			this.playing = false
 		}
+	}
+
+	onResize() {
+		this.main.y = this.height-256
+		this.redraw()
 	}
 }
 

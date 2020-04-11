@@ -1,9 +1,9 @@
-const { Mob } = require('tenkai')
+const { Entity } = require('tenkai')
 
 /**
- *  Character is a Mob specialisation that demonstrates how to build Mobs for specific games, in this case the Suikoden II remake.
+ *  Character is a Entity specialisation that demonstrates how to build Mobs for specific games, in this case the Suikoden II remake.
  */
-class Character extends Mob {
+class Character extends Entity {
 	constructor(options = {}) {
 		options = options || {}
 		super(options)
@@ -38,11 +38,11 @@ class Character extends Mob {
 		this.addAnimation('floateast', v)
 
 		// Overlay and animations (blinking, etc)
-		var overlay = new Mob({ asset: this.asset, x: 0, y: 0, tile: null, tileWidth: 48, tileHeight: 96 })
+		var overlay = new Entity({ asset: this.asset, x: 0, y: 0, tile: null, tileWidth: 48, tileHeight: 96 })
 		overlay.addAnimation('blinksouth', [ [ 3, 0, 150 ], [ null, null, Math.round(4000+(Math.random()*2000)) ], ])
 		overlay.addAnimation('blinkwest', [ [ 3, 2, 150 ], [ null, null, Math.round(4000+(Math.random()*2000)) ], ])
 		overlay.addAnimation('blinkeast', [ [ 3, 3, 150 ], [ null, null, Math.round(4000+(Math.random()*2000)) ], ])
-		this.addMob('overlay', overlay)
+		this.addEntity('overlay', overlay)
 	}
 }
 
