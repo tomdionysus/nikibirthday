@@ -34,6 +34,9 @@ class Remake extends GameEngine {
 
 		// Upbeat world map music
 		this.addAudio('adventure','./audio/130 even farther.mp3','audio/mpeg')
+
+		this.on('mousedown', this.onMouseDown.bind(this))
+		this.on('resize', this.onResize.bind(this))
 	}
 
 	init(callback) {
@@ -50,7 +53,7 @@ class Remake extends GameEngine {
 		callback()
 	}
 
-	mousedown() {
+	onMouseDown() {
 		if(!this.playing) {
 			// Play the tunes, fade them in
 			this.getAudio('adventure').fadeIn(4500)

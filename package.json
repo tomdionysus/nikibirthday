@@ -27,6 +27,7 @@
 		"node-sass": "^4.13.1",
 		"striptags": "^3.1.1",
 		"tenkai": "file:../tenkai",
+		"terser": "^4.6.11",
 		"tmp": "0.0.33",
 		"uglify-es": "^3.3.9",
 		"underscore": "^1.9.2",
@@ -35,7 +36,6 @@
 	"devDependencies": {
 		"electron": "^8.2.0",
 		"eslint": "^5.16.0",
-		"jasmine": "2.8.0",
-		"uglifyify": "^5.0.2"
+		"jasmine": "2.8.0"
 	}
 }
