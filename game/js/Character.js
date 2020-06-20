@@ -18,13 +18,13 @@ class Character extends Entity {
 		this.y = options.y || 0
 
 		// 
-		this.hotspotY = 48
+		this.hotspotY = 64
 
 		// Standard Character animations
 		this.addAnimation('walknorth', [ [0,1,120],[1,1,120],[2,1,120],[1,1,120] ])
 		this.addAnimation('walksouth', [ [0,0,120],[1,0,120],[2,0,120],[1,0,120] ])
-		this.addAnimation('walkwest',  [ [2,2,120,-8,2],[1,2,120,-8,-2],[0,2,120,-8,2],[1,2,120,-8,-2] ])
-		this.addAnimation('walkeast',  [ [2,3,120,8,2],[1,3,120,8,-2],[0,3,120,8,2],[1,3,120,8,-2] ])
+		this.addAnimation('walkwest',  [ [2,2,120,null,2],[1,2,120,null,-2],[0,2,120,null,2],[1,2,120,null,-2] ])
+		this.addAnimation('walkeast',  [ [2,3,120,null,2],[1,3,120,null,-2],[0,3,120,null,2],[1,3,120,null,-2] ])
 		this.addAnimation('jump', [
 			[ 1, 0, 50, 0, -10 ],
 			[ 0, 0, 50, 0, -10 ],
